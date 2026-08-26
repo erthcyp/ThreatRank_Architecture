@@ -481,20 +481,21 @@
   <h2>What the lab has established</h2>
   <p>Measured on <code>target-b1</code>, an Ubuntu 20.04 virtual machine built for this project.
      The two scans below ran an hour apart with a package list verified byte-identical between
-     them, so credentials were the only variable.</p>
+     them, so credentials were the only variable. Read the correction underneath the table
+     before quoting the headline number.</p>
 
   <div class="grid">
     <div class="card">
       <div class="eyebrow">Same host, same hour</div>
       <div class="stat">63 <small>&rarr;</small> 399</div>
-      <p>Findings without credentials, then with them. The unauthenticated report misses roughly
-         nine tenths of what is present.</p>
+      <p>Findings without credentials, then with them. The two counts measure different
+         surfaces, which is the point rather than a flaw: see below.</p>
     </div>
     <div class="card">
-      <div class="eyebrow">Invisible from the network</div>
-      <div class="stat">110<small> of 125</small></div>
-      <p>Vendor advisories on this host that ordinary updates cannot close, because the release
-         has passed end of standard support.</p>
+      <div class="eyebrow">Listens on no port</div>
+      <div class="stat">112<small> of 125</small></div>
+      <p>Credentialed advisories for software a remote attacker cannot reach: vim, git, curl,
+         the kernel. Only 13 concern network-facing packages.</p>
     </div>
     <div class="card">
       <div class="eyebrow">Unscoreable by any CVE method</div>
@@ -520,6 +521,23 @@
   </div>
   <p>The share of findings with no CVE falls under credentials, but the absolute number rises
      from 23 to 68. Credentials shrink the gap in proportion and widen it in count.</p>
+
+  <div class="keep" style="background:var(--designed-bg);border-color:var(--designed)">
+    <h3>A correction we made to our own reading of this</h3>
+    <p>We first read the jump from 63 to 399 as the unauthenticated scan missing nine tenths of
+       what is present. That is wrong. Of the 125 advisories only credentials revealed, 112 are
+       for software that listens on no port at all, so a remote attacker cannot reach them. The
+       unauthenticated scan is not failing to find them; they lie outside what a network scan
+       is for.</p>
+    <p>Restricted to network-facing packages, the credentialed scan named 13 advisories while
+       the unauthenticated scan reported 40 CVE-bearing findings on those same packages. On the
+       surface a remote attacker can reach, the scanner reports <b>more</b> than credentials
+       confirm, not less. The coverage gap is real, but it belongs to a local or
+       lateral-movement threat model and has to be stated with that attached.</p>
+    <p>The same error is documented in the literature: counting at package level and comparing
+       against a service-level scan inflates the gap, in the way dependency-level counting
+       inflates vulnerability counts in software composition analysis.</p>
+  </div>
 </section>
 
 <section>
