@@ -157,7 +157,7 @@
 
   <figure>
     <div class="canvas">
-      <svg viewBox="0 0 1720 640" role="img" aria-label="ThreatRank pipeline. Scanner reports are normalised, classified into weakness types by a trained model, correlated, and turned into features. Two scoring inputs follow: exploit likelihood, and attack consequence computed on an attack graph. Risk prediction combines them into one score per finding. Risk prioritisation ranks the findings and selects an action set within a fixed capacity. The same attack graph is drawn again in the output so the blue team can read the paths.">
+      <svg viewBox="0 0 1040 820" role="img" aria-label="ThreatRank pipeline, drawn in two rows. Top row: scanner reports are parsed in each tool's own format, normalised into one CSV row per finding, given a CWE weakness type by a gradient boosting model, and merged where two tools reported the same weakness. Bottom row: features are extracted, then two parallel heads score every finding, exploit likelihood and attack consequence computed on an attack graph. A learned model combines both heads into one risk score, prioritisation turns the ranking into an action plan within a fixed budget, and the same attack graph is drawn again in the output for the blue team. Below, scan-time package versions feed a false positive check that reads the normalised table and reports which findings the distribution had already fixed, and the evaluation band measures that rate alongside model accuracy.">
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
     <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--headA)"/></marker>
@@ -167,193 +167,222 @@
     <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--built)"/></marker>
   </defs>
 
-  <rect x="168" y="28" width="1400" height="546" rx="10" fill="none" stroke="currentColor" stroke-opacity=".26" stroke-width="1.5" stroke-dasharray="7 6"/>
-  <text x="184" y="48" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".45" letter-spacing="1">THREATRANK</text>
+  <rect x="150" y="30" width="742" height="760" rx="10" fill="none" stroke="currentColor" stroke-opacity=".26" stroke-width="1.5" stroke-dasharray="7 6"/>
+  <text x="164" y="50" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".45" letter-spacing="1">THREATRANK</text>
 
-  <rect x="370" y="42" width="1032" height="62" rx="8" fill="var(--surface-2)" stroke="var(--open)" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="386" y="62" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--open)" letter-spacing="1">OFFLINE . TRAINING</text>
-  <rect x="386" y="68" width="230" height="28" rx="5" fill="var(--surface)" stroke="var(--open)" stroke-opacity=".55"/>
-  <text x="501" y="86" text-anchor="middle" font-size="11" fill="currentColor">CWE labels from NVD, via CVE</text>
-  <line x1="616" y1="82" x2="648" y2="82" stroke="var(--open)" stroke-width="1.5" marker-end="url(#arO)"/>
-  <text x="660" y="79" font-size="10.5" fill="var(--open)" font-weight="600">trains the classifier</text>
-  <text x="660" y="92" font-size="10" fill="currentColor" fill-opacity=".7">hundreds of labelled findings</text>
-  <rect x="1010" y="68" width="230" height="28" rx="5" fill="var(--surface)" stroke="var(--open)" stroke-opacity=".55"/>
-  <text x="1125" y="86" text-anchor="middle" font-size="11" fill="currentColor">ranking supervision . unresolved</text>
-  <line x1="1240" y1="82" x2="1272" y2="82" stroke="var(--open)" stroke-width="1.5" marker-end="url(#arO)"/>
-  <text x="1284" y="86" font-size="10" fill="var(--open)" font-weight="600">trains the ranker</text>
+  <rect x="500" y="54" width="380" height="48" rx="8" fill="var(--surface-2)" stroke="var(--open)" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="512" y="70" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--open)" letter-spacing="1">OFFLINE . TRAINING</text>
+  <rect x="512" y="74" width="196" height="22" rx="5" fill="var(--surface)" stroke="var(--open)" stroke-opacity=".55"/>
+  <text x="610" y="89" text-anchor="middle" font-size="10" fill="currentColor">CWE labels from NVD</text>
+  <text x="718" y="86" font-size="9.5" fill="var(--open)" font-weight="600">trains the weakness model</text>
+  <text x="718" y="97" font-size="9" fill="currentColor" fill-opacity=".7">hundreds of labelled rows</text>
+  <line x1="610" y1="102" x2="610" y2="118" stroke="var(--open)" stroke-width="1.5" marker-end="url(#arO)"/>
 
-  <text x="16" y="140" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">INPUT</text>
-  <rect x="16" y="150" width="140" height="140" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
-  <text x="86" y="174" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">VA scanners</text>
-  <rect x="28" y="184" width="116" height="24" rx="4" fill="var(--surface)" stroke="currentColor" stroke-opacity=".25"/>
-  <text x="86" y="200" text-anchor="middle" font-size="10.5" fill="currentColor">OpenVAS . XML</text>
-  <rect x="28" y="212" width="116" height="24" rx="4" fill="var(--surface)" stroke="currentColor" stroke-opacity=".25"/>
-  <text x="86" y="228" text-anchor="middle" font-size="10.5" fill="currentColor">Nessus . JSON</text>
-  <text x="86" y="254" text-anchor="middle" font-size="10" fill="var(--headA)" font-weight="600">unauthenticated</text>
-  <text x="86" y="267" text-anchor="middle" font-size="10" fill="var(--headA)" font-weight="600">or credentialed</text>
-  <line x1="156" y1="220" x2="176" y2="220" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <text x="16" y="158" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">INPUT</text>
+  <rect x="16" y="168" width="120" height="130" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
+  <text x="76" y="190" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">VA scanners</text>
+  <rect x="26" y="200" width="100" height="22" rx="4" fill="var(--surface)" stroke="currentColor" stroke-opacity=".25"/>
+  <text x="76" y="215" text-anchor="middle" font-size="9.5" fill="currentColor">.xml  .json  .csv</text>
+  <text x="76" y="238" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".7">any tool that exports</text>
+  <text x="76" y="249" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".7">one of these formats</text>
+  <text x="76" y="268" text-anchor="middle" font-size="9.5" fill="var(--headA)" font-weight="600">unauthenticated</text>
+  <text x="76" y="280" text-anchor="middle" font-size="9.5" fill="var(--headA)" font-weight="600">or credentialed</text>
+  <line x1="136" y1="212" x2="162" y2="212" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="180" y="140" width="170" height="190" rx="8" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.8"/>
-  <circle cx="194" cy="156" r="4.5" fill="var(--built)"/>
-  <text x="265" y="166" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Normalise</text>
-  <text x="265" y="182" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".7">one row per finding per host</text>
-  <rect x="194" y="192" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
-  <text x="265" y="207" text-anchor="middle" font-size="10.5" fill="currentColor">unified schema</text>
-  <rect x="194" y="218" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
-  <text x="265" y="233" text-anchor="middle" font-size="10.5" fill="currentColor">scanner provenance</text>
-  <rect x="194" y="244" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
-  <text x="265" y="259" text-anchor="middle" font-size="10.5" fill="currentColor">detection method</text>
-  <rect x="194" y="270" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
-  <text x="265" y="285" text-anchor="middle" font-size="10.5" fill="currentColor">raw archived</text>
-  <text x="265" y="308" text-anchor="middle" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--built)">parse_openvas</text>
-  <text x="265" y="320" text-anchor="middle" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--built)">fetch_nessus</text>
-  <line x1="350" y1="220" x2="366" y2="220" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <rect x="166" y="122" width="150" height="180" rx="8" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.8"/>
+  <circle cx="180" cy="138" r="4.5" fill="var(--built)"/>
+  <text x="241" y="148" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Parse</text>
+  <text x="241" y="164" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".7">each tool, its own way in</text>
+  <rect x="178" y="174" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="241" y="189" text-anchor="middle" font-size="10" fill="currentColor">the file it exports</text>
+  <rect x="178" y="200" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="241" y="215" text-anchor="middle" font-size="10" fill="currentColor">or the scanner's API</text>
+  <text x="241" y="238" text-anchor="middle" font-size="9" fill="var(--built)" font-weight="600">some tools block export,</text>
+  <text x="241" y="250" text-anchor="middle" font-size="9" fill="var(--built)" font-weight="600">so we read the API instead</text>
+  <text x="241" y="272" text-anchor="middle" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--built)">parse_openvas</text>
+  <text x="241" y="284" text-anchor="middle" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--built)">fetch_nessus</text>
+  <line x1="316" y1="212" x2="336" y2="212" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="370" y="140" width="170" height="190" rx="8" fill="var(--headA-bg)" stroke="var(--headA)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <text x="455" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Weakness class</text>
-  <rect x="392" y="172" width="126" height="18" rx="9" fill="var(--surface)" stroke="var(--headA)"/>
-  <text x="455" y="185" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--headA)" letter-spacing=".05em">LEARNED MODEL</text>
-  <text x="455" y="206" text-anchor="middle" font-size="10.5" fill="currentColor">assign a CWE to every</text>
-  <text x="455" y="220" text-anchor="middle" font-size="10.5" fill="currentColor">finding, CVE or not</text>
-  <rect x="386" y="230" width="138" height="22" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
-  <text x="455" y="245" text-anchor="middle" font-size="10.5" fill="currentColor">CVE present: NVD lookup</text>
-  <rect x="386" y="256" width="138" height="22" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
-  <text x="455" y="271" text-anchor="middle" font-size="10.5" fill="currentColor">CVE absent: predicted</text>
-  <text x="455" y="294" text-anchor="middle" font-size="9.5" fill="var(--headA)" font-weight="600">trained where labels exist,</text>
-  <text x="455" y="306" text-anchor="middle" font-size="9.5" fill="var(--headA)" font-weight="600">applied where they do not</text>
-  <text x="455" y="322" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".55">the graph rules need this type</text>
-  <line x1="540" y1="220" x2="556" y2="220" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <rect x="340" y="122" width="150" height="180" rx="8" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.8"/>
+  <circle cx="354" cy="138" r="4.5" fill="var(--built)"/>
+  <text x="415" y="148" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Normalise</text>
+  <text x="415" y="164" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".7">one CSV row per finding</text>
+  <rect x="352" y="174" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="415" y="188" text-anchor="middle" font-size="10" fill="currentColor">source scanner</text>
+  <rect x="352" y="198" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="415" y="212" text-anchor="middle" font-size="10" fill="currentColor">detection method</text>
+  <rect x="352" y="222" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="415" y="236" text-anchor="middle" font-size="10" fill="currentColor">CVE references</text>
+  <rect x="352" y="246" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="415" y="260" text-anchor="middle" font-size="10" fill="currentColor">raw report kept</text>
+  <text x="415" y="282" text-anchor="middle" font-size="9" fill="var(--built)" font-weight="600">20 columns, both scanners</text>
+  <line x1="490" y1="212" x2="510" y2="212" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="560" y="140" width="170" height="190" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <circle cx="574" cy="156" r="4.5" fill="var(--designed)"/>
-  <text x="645" y="166" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Correlate</text>
-  <text x="645" y="184" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".7">rules, not a model</text>
-  <rect x="574" y="194" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="645" y="209" text-anchor="middle" font-size="10.5" fill="currentColor">merge across tools</text>
-  <rect x="574" y="220" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="645" y="235" text-anchor="middle" font-size="10.5" fill="currentColor">merge within a report</text>
-  <text x="645" y="262" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">no labels exist for</text>
-  <text x="645" y="274" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">which pairs match,</text>
-  <text x="645" y="286" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">so this stays explainable</text>
-  <line x1="730" y1="220" x2="746" y2="220" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <rect x="514" y="122" width="150" height="180" rx="8" fill="var(--headA-bg)" stroke="var(--headA)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="589" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Classification</text>
+  <rect x="530" y="154" width="118" height="18" rx="9" fill="var(--surface)" stroke="var(--headA)"/>
+  <text x="589" y="167" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--headA)" letter-spacing=".05em">GRADIENT BOOSTING</text>
+  <text x="589" y="188" text-anchor="middle" font-size="10" fill="currentColor">a CWE for every finding</text>
+  <text x="589" y="201" text-anchor="middle" font-size="10" fill="currentColor">with or without a CVE</text>
+  <rect x="526" y="210" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
+  <text x="589" y="224" text-anchor="middle" font-size="10" fill="currentColor">has CVE: NVD lookup</text>
+  <rect x="526" y="234" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
+  <text x="589" y="248" text-anchor="middle" font-size="10" fill="currentColor">no CVE: predicted</text>
+  <text x="589" y="272" text-anchor="middle" font-size="9" fill="var(--headA)" font-weight="600">XGBoost likely, not fixed</text>
+  <text x="589" y="290" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">the graph needs this type</text>
+  <line x1="664" y1="212" x2="684" y2="212" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="750" y="140" width="170" height="190" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <circle cx="764" cy="156" r="4.5" fill="var(--designed)"/>
-  <text x="835" y="166" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Features</text>
-  <text x="835" y="184" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".7">context beyond the identifier</text>
-  <rect x="764" y="194" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="835" y="209" text-anchor="middle" font-size="10.5" fill="currentColor">detection confidence</text>
-  <rect x="764" y="220" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="835" y="235" text-anchor="middle" font-size="10.5" fill="currentColor">exposure . co-findings</text>
-  <rect x="764" y="246" width="142" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="835" y="261" text-anchor="middle" font-size="10.5" fill="currentColor">text of the finding</text>
-  <text x="835" y="288" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">one feature vector</text>
-  <text x="835" y="300" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">per finding</text>
+  <rect x="688" y="122" width="150" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <circle cx="702" cy="138" r="4.5" fill="var(--designed)"/>
+  <text x="763" y="148" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Correlation</text>
+  <text x="763" y="164" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".7">rules, not a model</text>
+  <rect x="700" y="174" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="763" y="188" text-anchor="middle" font-size="10" fill="currentColor">duplicate across tools</text>
+  <rect x="700" y="198" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="763" y="212" text-anchor="middle" font-size="10" fill="currentColor">duplicate, one report</text>
+  <text x="763" y="236" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">no label says which pairs</text>
+  <text x="763" y="248" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">match, so this stays</text>
+  <text x="763" y="260" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">rule-based and readable</text>
 
-  <path d="M920,190 L934,190 L934,164" fill="none" stroke="var(--headA)" stroke-width="1.8" marker-end="url(#arA)"/>
-  <path d="M920,268 L934,268 L934,312 L942,312" fill="none" stroke="var(--headB)" stroke-width="1.8" marker-end="url(#arB)"/>
+  <path d="M763,302 L763,326 L241,326 L241,380" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <text x="500" y="320" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".6">all findings carried forward</text>
 
-  <rect x="948" y="118" width="244" height="98" rx="8" fill="var(--headA-bg)" stroke="var(--headA)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <text x="962" y="140" font-size="12.5" font-weight="600" fill="currentColor">Exploit likelihood</text>
-  <line x1="962" y1="148" x2="1178" y2="148" stroke="var(--headA)" stroke-opacity=".35"/>
-  <text x="962" y="166" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">CVE present</text>
-  <text x="1040" y="166" font-size="10" fill="currentColor">EPSS, an existing model</text>
-  <text x="962" y="186" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">CVE absent</text>
-  <text x="1040" y="186" font-size="9.5" fill="currentColor">verified access at scan time</text>
-  <text x="962" y="204" font-size="9" fill="currentColor" fill-opacity=".6">not retrained here: 10 KEV positives</text>
-  <text x="962" y="214" font-size="9" fill="currentColor" fill-opacity=".6">is not a training set</text>
+  <rect x="166" y="384" width="150" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <circle cx="180" cy="400" r="4.5" fill="var(--designed)"/>
+  <text x="241" y="410" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Feature engineering</text>
+  <text x="241" y="426" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".7">context beyond the CVE</text>
+  <rect x="178" y="436" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="241" y="450" text-anchor="middle" font-size="10" fill="currentColor">detection confidence</text>
+  <rect x="178" y="460" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="241" y="474" text-anchor="middle" font-size="10" fill="currentColor">exposure, co-findings</text>
+  <rect x="178" y="484" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="241" y="498" text-anchor="middle" font-size="10" fill="currentColor">the finding's text</text>
+  <text x="241" y="522" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">one feature vector</text>
+  <text x="241" y="534" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">per finding</text>
 
-  <rect x="948" y="236" width="244" height="146" rx="8" fill="var(--headB-bg)" stroke="var(--headB)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <text x="1070" y="256" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Attack consequence</text>
-  <rect x="1006" y="262" width="128" height="18" rx="9" fill="var(--surface)" stroke="var(--headB)"/>
-  <text x="1070" y="275" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--headB)" letter-spacing=".05em">ATTACK GRAPH</text>
-  <line x1="962" y1="288" x2="1178" y2="288" stroke="var(--headB)" stroke-opacity=".35"/>
-  <line x1="990" y1="312" x2="1028" y2="312" stroke="var(--headB)" stroke-width="1.5" marker-end="url(#arS)"/>
-  <line x1="1050" y1="312" x2="1088" y2="312" stroke="var(--headB)" stroke-width="1.5" marker-end="url(#arS)"/>
-  <line x1="1110" y1="312" x2="1148" y2="312" stroke="var(--headB)" stroke-width="1.5" marker-end="url(#arS)"/>
-  <circle cx="980" cy="312" r="8" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.6"/>
-  <circle cx="1040" cy="312" r="8" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.6"/>
-  <circle cx="1100" cy="312" r="8" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.6"/>
-  <circle cx="1160" cy="312" r="9" fill="var(--headB)" stroke="var(--headB)" stroke-width="1.6"/>
-  <text x="980" y="332" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".75">entry</text>
-  <text x="1040" y="332" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".75">service</text>
-  <text x="1100" y="332" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".75">privilege</text>
-  <text x="1160" y="332" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".75">asset</text>
-  <text x="962" y="352" font-size="9.5" fill="var(--headB)" font-weight="600">computed by rules, never trained</text>
-  <text x="962" y="364" font-size="9.5" fill="currentColor" fill-opacity=".65">every finding lands on the graph,</text>
-  <text x="962" y="376" font-size="9.5" fill="currentColor" fill-opacity=".65">identifier or not</text>
+  <path d="M316,420 L328,420 L328,396 L336,396" fill="none" stroke="var(--headA)" stroke-width="1.8" marker-end="url(#arA)"/>
+  <path d="M316,500 L328,500 L328,528 L336,528" fill="none" stroke="var(--headB)" stroke-width="1.8" marker-end="url(#arB)"/>
 
-  <path d="M1192,167 L1206,167 L1206,214" fill="none" stroke="var(--headA)" stroke-width="1.8"/>
-  <path d="M1192,312 L1206,312 L1206,246" fill="none" stroke="var(--headB)" stroke-width="1.8"/>
-  <line x1="1206" y1="230" x2="1224" y2="230" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <rect x="340" y="344" width="190" height="104" rx="8" fill="var(--headA-bg)" stroke="var(--headA)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="354" y="366" font-size="12.5" font-weight="600" fill="currentColor">Exploit likelihood</text>
+  <line x1="354" y1="374" x2="516" y2="374" stroke="var(--headA)" stroke-opacity=".35"/>
+  <text x="354" y="392" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">has CVE</text>
+  <text x="410" y="392" font-size="10" fill="currentColor">EPSS, a public score</text>
+  <text x="354" y="410" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">no CVE</text>
+  <text x="410" y="410" font-size="9" fill="currentColor">access the scan proved</text>
+  <text x="354" y="428" font-size="8.5" fill="currentColor" fill-opacity=".6">not retrained here: 10 KEV</text>
+  <text x="354" y="439" font-size="8.5" fill="currentColor" fill-opacity=".6">positives is not a training set</text>
 
-  <rect x="1228" y="140" width="164" height="190" rx="8" fill="var(--surface)" stroke="var(--open)" stroke-width="1.8" stroke-dasharray="3 3"/>
-  <circle cx="1242" cy="156" r="4.5" fill="var(--open)"/>
-  <text x="1310" y="168" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Risk prediction</text>
-  <rect x="1246" y="176" width="128" height="18" rx="9" fill="var(--surface-2)" stroke="var(--open)" stroke-opacity=".6"/>
-  <text x="1310" y="189" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--open)" letter-spacing=".05em">LEARNED MODEL</text>
-  <text x="1310" y="212" text-anchor="middle" font-size="10.5" fill="currentColor">combines the two into</text>
-  <text x="1310" y="226" text-anchor="middle" font-size="10.5" fill="currentColor">one risk score per finding</text>
-  <rect x="1246" y="238" width="128" height="24" rx="4" fill="var(--open-bg)" stroke="var(--open)" stroke-opacity=".5"/>
-  <text x="1310" y="254" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">risk score</text>
-  <text x="1310" y="280" text-anchor="middle" font-size="9.5" fill="var(--open)" font-weight="600">the weighting is learned,</text>
-  <text x="1310" y="292" text-anchor="middle" font-size="9.5" fill="var(--open)" font-weight="600">not chosen by us</text>
-  <text x="1310" y="312" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".55">supervision source still open</text>
-  <line x1="1392" y1="230" x2="1410" y2="230" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <rect x="340" y="464" width="190" height="158" rx="8" fill="var(--headB-bg)" stroke="var(--headB)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="435" y="484" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Attack consequence</text>
+  <rect x="381" y="490" width="108" height="18" rx="9" fill="var(--surface)" stroke="var(--headB)"/>
+  <text x="435" y="503" text-anchor="middle" font-size="9" font-weight="600" fill="var(--headB)" letter-spacing=".05em">ATTACK GRAPH</text>
+  <line x1="354" y1="516" x2="516" y2="516" stroke="var(--headB)" stroke-opacity=".35"/>
+  <line x1="369" y1="543" x2="409" y2="534" stroke="var(--headB)" stroke-width="1.4" marker-end="url(#arS)"/>
+  <line x1="422" y1="532" x2="455" y2="532" stroke="var(--headB)" stroke-width="1.4" marker-end="url(#arS)"/>
+  <line x1="468" y1="534" x2="488" y2="543" stroke="var(--headB)" stroke-width="1.4" marker-end="url(#arS)"/>
+  <line x1="368" y1="551" x2="413" y2="560" stroke="var(--headB)" stroke-width="1.4" marker-end="url(#arS)"/>
+  <line x1="426" y1="560" x2="488" y2="549" stroke="var(--headB)" stroke-width="1.4" marker-end="url(#arS)"/>
+  <circle cx="362" cy="546" r="7" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.6"/>
+  <circle cx="416" cy="532" r="6" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.5"/>
+  <circle cx="462" cy="532" r="6" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.5"/>
+  <circle cx="420" cy="562" r="6" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.5"/>
+  <circle cx="496" cy="546" r="8" fill="var(--headB)" stroke="var(--headB)" stroke-width="1.6"/>
+  <text x="362" y="580" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".75">entry</text>
+  <text x="496" y="580" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".75">asset</text>
+  <text x="354" y="596" font-size="9" fill="var(--headB)" font-weight="600">more than one route counts</text>
+  <text x="354" y="607" font-size="9" fill="currentColor" fill-opacity=".65">rules, never trained, so</text>
+  <text x="354" y="617" font-size="9" fill="currentColor" fill-opacity=".65">every finding lands here</text>
 
-  <rect x="1414" y="140" width="154" height="190" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <circle cx="1428" cy="156" r="4.5" fill="var(--designed)"/>
-  <text x="1491" y="168" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Prioritisation</text>
-  <rect x="1428" y="180" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="1491" y="195" text-anchor="middle" font-size="10.5" fill="currentColor">rank every finding</text>
-  <rect x="1428" y="206" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="1491" y="221" text-anchor="middle" font-size="10.5" fill="currentColor">group by fix action</text>
-  <rect x="1428" y="232" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="1491" y="247" text-anchor="middle" font-size="10.5" fill="currentColor">cost per action</text>
-  <rect x="1428" y="258" width="126" height="22" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
-  <text x="1491" y="273" text-anchor="middle" font-size="10.5" fill="currentColor">select within budget k</text>
-  <text x="1491" y="298" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">a ranked list of 400 rows</text>
-  <text x="1491" y="310" text-anchor="middle" font-size="9.5" fill="var(--designed)" font-weight="600">is not yet an action plan</text>
-  <line x1="1568" y1="230" x2="1586" y2="230" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+  <path d="M530,396 L542,396 L542,474" fill="none" stroke="var(--headA)" stroke-width="1.8"/>
+  <path d="M530,534 L542,534 L542,474" fill="none" stroke="var(--headB)" stroke-width="1.8"/>
+  <line x1="542" y1="474" x2="550" y2="474" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <text x="1710" y="140" text-anchor="end" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">OUTPUT</text>
-  <rect x="1590" y="150" width="120" height="170" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
-  <text x="1650" y="174" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Action plan</text>
-  <text x="1650" y="190" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".65">for the blue team</text>
-  <line x1="1614" y1="228" x2="1638" y2="228" stroke="var(--headB)" stroke-width="1.3" marker-end="url(#arS)"/>
-  <line x1="1656" y1="228" x2="1680" y2="228" stroke="var(--headB)" stroke-width="1.3" marker-end="url(#arS)"/>
-  <circle cx="1608" cy="228" r="6" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.4"/>
-  <circle cx="1648" cy="228" r="6" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.4"/>
-  <circle cx="1690" cy="228" r="7" fill="var(--headB)" stroke="var(--headB)" stroke-width="1.4"/>
-  <text x="1650" y="254" text-anchor="middle" font-size="9.5" fill="var(--headB)" font-weight="600">the same graph,</text>
-  <text x="1650" y="266" text-anchor="middle" font-size="9.5" fill="var(--headB)" font-weight="600">drawn to be read</text>
-  <text x="1650" y="288" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity=".65">ordered actions,</text>
-  <text x="1650" y="300" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity=".65">paths, and evidence</text>
+  <rect x="554" y="384" width="150" height="180" rx="8" fill="var(--surface)" stroke="var(--open)" stroke-width="1.8" stroke-dasharray="3 3"/>
+  <circle cx="568" cy="400" r="4.5" fill="var(--open)"/>
+  <text x="629" y="410" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Risk prediction</text>
+  <rect x="566" y="418" width="126" height="18" rx="9" fill="var(--surface-2)" stroke="var(--open)" stroke-opacity=".6"/>
+  <text x="629" y="431" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--open)" letter-spacing=".05em">LEARNED MODEL</text>
+  <text x="629" y="452" text-anchor="middle" font-size="9.5" fill="currentColor">combines both heads into</text>
+  <text x="629" y="465" text-anchor="middle" font-size="9.5" fill="currentColor">one score per finding</text>
+  <rect x="566" y="474" width="126" height="22" rx="4" fill="var(--open-bg)" stroke="var(--open)" stroke-opacity=".5"/>
+  <text x="629" y="489" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">risk score</text>
+  <text x="629" y="512" text-anchor="middle" font-size="9" fill="var(--open)" font-weight="600">the weighting is learned,</text>
+  <text x="629" y="524" text-anchor="middle" font-size="9" fill="var(--open)" font-weight="600">not chosen by us</text>
+  <text x="629" y="542" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">model and label still open</text>
+  <line x1="704" y1="474" x2="724" y2="474" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="16" y="400" width="140" height="110" rx="6" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.5"/>
-  <circle cx="30" cy="416" r="4" fill="var(--built)"/>
-  <text x="86" y="436" text-anchor="middle" font-size="11.5" font-weight="600" fill="currentColor">Scan-time evidence</text>
-  <text x="86" y="456" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity=".75">installed package versions,</text>
-  <text x="86" y="469" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity=".75">captured before every scan</text>
-  <text x="86" y="490" text-anchor="middle" font-size="9.5" fill="var(--built)" font-weight="600">labels what the report</text>
-  <text x="86" y="502" text-anchor="middle" font-size="9.5" fill="var(--built)" font-weight="600">got wrong</text>
-  <path d="M156,450 L166,450 L166,310 L176,310" fill="none" stroke="var(--built)" stroke-width="1.6" marker-end="url(#arG)"/>
+  <rect x="728" y="384" width="150" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <circle cx="742" cy="400" r="4.5" fill="var(--designed)"/>
+  <text x="803" y="410" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Prioritise</text>
+  <rect x="740" y="420" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="803" y="434" text-anchor="middle" font-size="10" fill="currentColor">rank every finding</text>
+  <rect x="740" y="444" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="803" y="458" text-anchor="middle" font-size="10" fill="currentColor">group by fix action</text>
+  <rect x="740" y="468" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="803" y="482" text-anchor="middle" font-size="10" fill="currentColor">cost per action</text>
+  <rect x="740" y="492" width="126" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
+  <text x="803" y="506" text-anchor="middle" font-size="10" fill="currentColor">pick within budget</text>
+  <text x="803" y="528" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">a ranked list of 400 rows</text>
+  <text x="803" y="540" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">is not yet an action plan</text>
+  <text x="803" y="554" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">method not chosen yet</text>
+  <line x1="878" y1="474" x2="902" y2="474" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="180" y="420" width="740" height="88" rx="8" fill="var(--surface)" stroke="currentColor" stroke-opacity=".3" stroke-dasharray="6 4"/>
-  <text x="198" y="442" font-size="12.5" font-weight="600" fill="currentColor">Evaluation</text>
-  <text x="198" y="462" font-size="10.5" fill="currentColor" fill-opacity=".75">two splits, always: held out by host, and held out by CVE</text>
-  <text x="198" y="478" font-size="10.5" fill="currentColor" fill-opacity=".75">a model that passes the first and fails the second has memorised CVE identity</text>
-  <text x="198" y="494" font-size="10.5" fill="currentColor" fill-opacity=".75">report AUC-PR with bootstrap intervals, not AUC-ROC</text>
-  <path d="M1310,330 L1310,406 L560,406 L560,416" fill="none" stroke="currentColor" stroke-width="1.4" stroke-opacity=".45" stroke-dasharray="5 5" marker-end="url(#ar)"/>
+  <text x="1024" y="372" text-anchor="end" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">OUTPUT</text>
+  <rect x="910" y="384" width="114" height="180" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
+  <text x="967" y="408" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">Action plan</text>
+  <text x="967" y="423" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity=".65">for the blue team</text>
+  <line x1="934" y1="444" x2="956" y2="439" stroke="var(--headB)" stroke-width="1.2" marker-end="url(#arS)"/>
+  <line x1="934" y1="450" x2="956" y2="455" stroke="var(--headB)" stroke-width="1.2" marker-end="url(#arS)"/>
+  <line x1="969" y1="439" x2="992" y2="444" stroke="var(--headB)" stroke-width="1.2" marker-end="url(#arS)"/>
+  <line x1="969" y1="455" x2="992" y2="450" stroke="var(--headB)" stroke-width="1.2" marker-end="url(#arS)"/>
+  <circle cx="929" cy="447" r="5" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.4"/>
+  <circle cx="963" cy="437" r="5" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.4"/>
+  <circle cx="963" cy="457" r="5" fill="var(--surface)" stroke="var(--headB)" stroke-width="1.4"/>
+  <circle cx="998" cy="447" r="6" fill="var(--headB)" stroke="var(--headB)" stroke-width="1.4"/>
+  <text x="967" y="478" text-anchor="middle" font-size="9" fill="var(--headB)" font-weight="600">the same graph,</text>
+  <text x="967" y="490" text-anchor="middle" font-size="9" fill="var(--headB)" font-weight="600">drawn to be read</text>
+  <text x="967" y="512" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".65">ordered actions,</text>
+  <text x="967" y="524" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".65">paths, and evidence</text>
+
+  <rect x="16" y="660" width="120" height="110" rx="6" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.5"/>
+  <circle cx="28" cy="676" r="4" fill="var(--built)"/>
+  <text x="76" y="692" text-anchor="middle" font-size="9.5" font-weight="600" fill="currentColor">Scan-time evidence</text>
+  <text x="76" y="710" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".75">installed versions,</text>
+  <text x="76" y="721" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".75">saved before the scan</text>
+  <text x="76" y="740" text-anchor="middle" font-size="8.5" fill="var(--built)" font-weight="600">never reconstructed</text>
+  <text x="76" y="751" text-anchor="middle" font-size="8.5" fill="var(--built)" font-weight="600">afterwards</text>
+  <line x1="136" y1="715" x2="162" y2="715" stroke="var(--built)" stroke-width="1.6" marker-end="url(#arG)"/>
+
+  <rect x="166" y="660" width="180" height="110" rx="8" fill="var(--built-bg)" stroke="var(--built)" stroke-width="1.8"/>
+  <circle cx="180" cy="676" r="4.5" fill="var(--built)"/>
+  <text x="256" y="692" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor">False positive check</text>
+  <text x="256" y="708" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity=".7">reads the normalised table</text>
+  <rect x="178" y="716" width="156" height="20" rx="4" fill="var(--surface)" stroke="var(--built)" stroke-opacity=".45"/>
+  <text x="256" y="730" text-anchor="middle" font-size="9.5" fill="currentColor">already fixed at scan time</text>
+  <text x="256" y="750" text-anchor="middle" font-size="8.5" fill="var(--built)" font-weight="600">lab only: needs the host's</text>
+  <text x="256" y="761" text-anchor="middle" font-size="8.5" fill="var(--built)" font-weight="600">own package list</text>
+  <line x1="346" y1="715" x2="366" y2="715" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
+
+  <rect x="370" y="660" width="508" height="110" rx="8" fill="var(--surface)" stroke="currentColor" stroke-opacity=".3" stroke-dasharray="6 4"/>
+  <text x="388" y="682" font-size="12.5" font-weight="600" fill="currentColor">Evaluation</text>
+  <text x="388" y="702" font-size="10.5" fill="currentColor" fill-opacity=".75">three splits, always: held out by host, held out by CVE, and split by date</text>
+  <text x="388" y="718" font-size="10.5" fill="currentColor" fill-opacity=".75">a model that passes the first and fails the second has memorised CVE identity</text>
+  <text x="388" y="734" font-size="10.5" fill="currentColor" fill-opacity=".75">report AUC-PR with bootstrap intervals, not AUC-ROC</text>
+  <text x="388" y="750" font-size="10.5" fill="currentColor" fill-opacity=".75">false-positive rate measured against the check on the left</text>
+  <path d="M629,564 L629,656" fill="none" stroke="currentColor" stroke-width="1.4" stroke-opacity=".45" stroke-dasharray="5 5" marker-end="url(#ar)"/>
 </svg>
     </div>
-    <figcaption>Machine learning sits in two places, and each is there because labels exist for
-      it. Weakness classification learns from CWE assignments that NVD already publishes for
-      every CVE, then applies them to findings that carry no identifier. Risk prediction learns
-      how to weigh likelihood against consequence rather than having us choose the weights by
-      hand. Everything else is rules, including the attack graph, which needs no training and so
-      covers every finding. The graph appears twice on purpose: once to compute consequence
-      before ranking, and once at the end drawn for a person to read.</figcaption>
+    <figcaption>Read the top row left to right, then the bottom row. Machine learning sits in
+      two places, and each is there because labels exist for it. Weakness typing learns from the
+      CWE assignments NVD already publishes for every CVE, then applies them to findings that
+      carry no identifier. Risk prediction learns how to weigh likelihood against consequence
+      rather than having us choose the weights by hand. Everything else is rules, including the
+      attack graph, which needs no training and so covers every finding. The graph appears twice
+      on purpose: once to compute consequence before ranking, and once at the end drawn for a
+      person to read. The false positive check is the one part that does not transfer to the
+      field: reading a package list needs access to the host, which exists here only because
+      we built the machines.</figcaption>
   </figure>
 </section>
 
