@@ -87,6 +87,8 @@
   .chip b{font-weight:600}
   .dot{width:9px;height:9px;border-radius:50%;flex:none}
   .d-built{background:var(--built)} .d-designed{background:var(--designed)} .d-open{background:var(--open)}
+    .d-headA{background:var(--headA)}
+    .d-headB{background:var(--headB)}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
   .card{
@@ -155,6 +157,13 @@
     <span class="chip"><span class="dot d-designed"></span><b>Designed, not built</b></span>
     <span class="chip"><span class="dot d-open"></span><b>Open decision</b></span>
   </div>
+  <div class="legend">
+    <span class="chip"><span class="dot d-headA"></span><b>Exploit likelihood</b>, one of the two heads</span>
+    <span class="chip"><span class="dot d-headB"></span><b>Attack consequence</b>, the other</span>
+  </div>
+  <p class="eyebrow">Colour carries status, except on the two head boxes, which are tinted by
+     which head they compute. Status is on those boxes too, in the outline: a solid outline is
+     running, a dashed one is designed, a dotted one is an open decision.</p>
 
   <figure>
     <div class="canvas">
@@ -220,17 +229,17 @@
   <text x="462" y="292" text-anchor="middle" font-size="8.5" fill="var(--open)" font-weight="600">but QoD is OpenVAS only</text>
   <line x1="542" y1="212" x2="564" y2="212" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="568" y="122" width="160" height="180" rx="8" fill="var(--headA-bg)" stroke="var(--headA)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <rect x="568" y="122" width="160" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
   <text x="648" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="currentColor">Classification</text>
-  <rect x="586" y="154" width="124" height="18" rx="9" fill="var(--surface)" stroke="var(--headA)"/>
-  <text x="648" y="167" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--headA)" letter-spacing=".05em">GRADIENT BOOSTING</text>
+  <rect x="586" y="154" width="124" height="18" rx="9" fill="var(--surface)" stroke="var(--designed)"/>
+  <text x="648" y="167" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--designed)" letter-spacing=".05em">GRADIENT BOOSTING</text>
   <text x="648" y="188" text-anchor="middle" font-size="10" fill="currentColor">a CWE for every finding</text>
   <text x="648" y="201" text-anchor="middle" font-size="10" fill="currentColor">with or without a CVE</text>
-  <rect x="580" y="210" width="136" height="20" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
+  <rect x="580" y="210" width="136" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
   <text x="648" y="224" text-anchor="middle" font-size="10" fill="currentColor">has CVE: NVD lookup</text>
-  <rect x="580" y="234" width="136" height="20" rx="4" fill="var(--surface)" stroke="var(--headA)" stroke-opacity=".45"/>
+  <rect x="580" y="234" width="136" height="20" rx="4" fill="var(--surface)" stroke="var(--designed)" stroke-opacity=".45"/>
   <text x="648" y="248" text-anchor="middle" font-size="10" fill="currentColor">no CVE: predicted</text>
-  <text x="648" y="272" text-anchor="middle" font-size="9" fill="var(--headA)" font-weight="600">XGBoost likely, not fixed</text>
+  <text x="648" y="272" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">XGBoost likely, not fixed</text>
   <text x="648" y="290" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">the graph needs this type</text>
 
   <path d="M648,302 L648,318 L336,318 L336,336" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
@@ -401,95 +410,247 @@
   </figure>
 </section>
 <section>
-  <h2>What each block does</h2>
-  <p>The diagram names the stages; this table says what actually passes between them. The
-     status column repeats the legend: a stage is running only if code exists and has produced
-     output, which is true of four of the ten.</p>
+  <h2>The ten stages, in enough detail to build them</h2>
+  <p>This section is the specification, not the scope. For each stage: what arrives, what it
+     looks like, what is done to it, whether a model is involved and which one, what leaves, and
+     who consumes it. Where something is genuinely undecided it says so rather than inventing a
+     plausible answer, because a specification that hides its gaps cannot be implemented from.</p>
 
-  <div class="tbl">
-    <table>
-      <caption>Every stage, by what it consumes and what it hands on</caption>
-      <thead><tr><th>Stage</th><th>Takes</th><th>Produces</th><th>Method</th><th style="width:96px">Status</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><b>Parse</b></td>
-          <td>whatever one scanner exports, a file or its own API</td>
-          <td>rows in memory</td>
-          <td>one adapter per tool</td>
-          <td><span class="tag t-run">Running</span></td>
-        </tr>
-        <tr>
-          <td><b>Normalise</b></td>
-          <td>parsed rows from any tool</td>
-          <td>one CSV row per finding per host, 20 columns</td>
-          <td>schema mapping, no learning</td>
-          <td><span class="tag t-run">Running</span></td>
-        </tr>
-        <tr>
-          <td><b>Classification</b></td>
-          <td>a normalised finding</td>
-          <td>a CWE for it, whether or not it names a CVE</td>
-          <td>gradient boosting, supervised by the CWE assignments NVD publishes per CVE</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>Correlation</b></td>
-          <td>classified findings from every tool, plus earlier scans of the same host</td>
-          <td>merged rows, and link features describing what a finding sits next to</td>
-          <td>rules for merging, mining for links; the two cannot share a method because no
-              label exists for which pairs are the same finding</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>Feature engineering</b></td>
-          <td>correlated findings, plus the conditions you declare</td>
-          <td>one numeric vector per finding, roughly 30 structured dimensions and a text block</td>
-          <td>one-hot for low-cardinality categories, ordinal for QoD, TF-IDF measured against a
-              sentence embedding; encoders fit on the train split only</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>Exploit likelihood</b></td>
-          <td>a finding, with or without a CVE</td>
-          <td>one likelihood value</td>
-          <td>EPSS where a CVE exists, and access the scanner actually confirmed where it does
-              not; ten KEV positives is not enough to retrain anything here</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>Attack consequence</b></td>
-          <td>the CWE, the service facts from the scan, the lab's own topology</td>
-          <td>one consequence value per finding</td>
-          <td>logical rules on an attack graph, never trained, which is why it reaches every
-              finding rather than only the CVE-bearing ones</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>Risk prediction</b></td>
-          <td>both head values and the feature vector</td>
-          <td>one risk score per finding</td>
-          <td>gradient boosting classifier, KEV as the label on the CVE-bearing subset; the
-              predicted probability is the score</td>
-          <td><span class="tag t-block">Open</span></td>
-        </tr>
-        <tr>
-          <td><b>Prioritise</b></td>
-          <td>scored findings, the cost of each fix action, a budget</td>
-          <td>an ordered recommendation that fits the budget</td>
-          <td>learning to rank, graded 2 for KEV, 1 for confirmed access, 0 otherwise; falls back
-              to sorting by score plus a knapsack if the data proves too thin</td>
-          <td><span class="tag t-revise">Designed</span></td>
-        </tr>
-        <tr>
-          <td><b>False positive check</b></td>
-          <td>the normalised table and the package versions saved before that scan</td>
-          <td>a verdict per finding</td>
-          <td>compares each cited CVE against the version installed at scan time; works only
-              because we own the machines</td>
-          <td><span class="tag t-run">Running</span></td>
-        </tr>
-      </tbody>
-    </table>
+  <p><b>Four stages run today</b> and their descriptions are of code that exists and has produced
+     output. The other six are designs. The three questions that were open until now, how a finding
+     with no CVE gets a likelihood, how the two heads are weighted, and how a graph becomes one
+     consequence number, are answered here rather than deferred. <b>Each answer is stated together
+     with the measurement that would show it is wrong and the fallback if it is.</b> They are
+     proposals meant to be revised in Deliverable 3 on evidence, not guesses dressed up as
+     conclusions.</p>
+
+  <h3>1. Parse <span class="tag t-run">Running</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Whatever one scanner exports. OpenVAS gives Greenbone XML, a tree of <code>&lt;result&gt;</code> elements. Nessus gives JSON pulled from the local REST API, because Essentials disables file export, so the API is the only way out.</td></tr>
+    <tr><td><b>Where from</b></td><td><code>data/raw/&lt;scanner&gt;/</code>, named <code>YYYY-MM-DD_scanner_group_target.{xml,json}</code>. Raw files are archived and never edited: a rescan is a new observation, not a reproduction.</td></tr>
+    <tr><td><b>Process</b></td><td>One adapter per tool, <code>parse_openvas.py</code> and <code>fetch_nessus.py</code>. No learning. Scanner and group are derived from the filename.</td></tr>
+    <tr><td><b>Output</b></td><td>Rows in memory, already conforming to the unified schema below.</td></tr>
+    <tr><td><b>Feeds</b></td><td>Normalise.</td></tr>
+  </tbody></table></div>
+  <p>Adding a third scanner costs one adapter and changes no other stage. That is why the diagram
+     names no tool at the input: it accepts anything exporting <code>.xml</code>,
+     <code>.json</code> or <code>.csv</code>.</p>
+
+  <h3>2. Normalise <span class="tag t-run">Running</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Parsed rows from any tool.</td></tr>
+    <tr><td><b>Process</b></td><td>Schema mapping, no learning. KEV membership is joined from a pinned local snapshot rather than fetched, so the figure is reproducible: <code>kev_catalog.json</code>, catalogVersion 2026.08.17, 1,666 CVEs.</td></tr>
+    <tr><td><b>Output</b></td><td>One CSV row per finding per host, 20 columns.</td></tr>
+    <tr><td><b>Feeds</b></td><td>Classification, Correlation, the false positive check, and the MulVAL adapter.</td></tr>
+  </tbody></table></div>
+  <p>The 20 columns, which every later stage reads:</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:210px">Group</th><th>Columns</th></tr></thead>
+    <tbody>
+      <tr><td><b>Provenance</b></td><td><code>source_file</code>, <code>group</code>, <code>scanner</code></td></tr>
+      <tr><td><b>Location</b></td><td><code>host</code>, <code>hostname</code>, <code>port</code> (as <code>80/tcp</code>, or <code>general/tcp</code> for host-level findings)</td></tr>
+      <tr><td><b>Identity of the test</b></td><td><code>nvt_oid</code>, <code>nvt_name</code>, <code>nvt_family</code></td></tr>
+      <tr><td><b>Severity and confidence</b></td><td><code>threat</code>, <code>severity</code>, <code>qod</code>, <code>solution_type</code></td></tr>
+      <tr><td><b>CVE and label</b></td><td><code>cve_count</code>, <code>cves</code>, <code>has_cve</code>, <code>generic_nvt</code>, <code>kev_cves</code>, <code>has_kev</code>, <code>cert_ref_count</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>A real row, from <code>target-b1</code>: host <code>192.168.194.150</code>, port
+     <code>80/tcp</code>, severity <code>9.8</code>, qod <code>30</code>, solution_type
+     <code>VendorFix</code>, nvt_name <i>Apache HTTP Server &lt; 2.4.60 Multiple Vulnerabilities</i>,
+     four CVEs. And one with no CVE at all: port <code>22/tcp</code>, severity <code>5.0</code>,
+     family <code>General</code>, nvt_name <i>OpenBSD OpenSSH &lt; 9.2 Unspecified Vulnerability</i>.
+     Every stage after this point has to handle both.</p>
+
+  <h3>3. Classification <span class="tag t-revise">Designed</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>One normalised finding.</td></tr>
+    <tr><td><b>Output</b></td><td>One CWE identifier, for every finding, whether or not it names a CVE.</td></tr>
+    <tr><td><b>Model</b></td><td><b>Gradient boosting.</b> XGBoost is the intended library (DMLC, open source, Apache 2.0); it is not committed, and LightGBM would serve. <b>Baseline: logistic regression</b> from scikit-learn, which costs three lines and makes the result mean something. If boosting cannot beat it, the data does not support a complex model, and that is a reportable finding rather than a failure.</td></tr>
+    <tr><td><b>Label</b></td><td>The CWE assignments NVD publishes per CVE. Only CVE-bearing findings can be labelled, so the model trains on those and is applied to all. <b>That extrapolation is the stage's central assumption and has to be stated as a limitation.</b></td></tr>
+    <tr><td><b>Features</b></td><td>TF-IDF over <code>nvt_name</code> and the solution text; one-hot <code>nvt_family</code>, <code>threat</code>, <code>solution_type</code>; ordinal <code>qod</code>; numeric <code>severity</code>; the port. Vectoriser and encoders fit on the train split only.</td></tr>
+    <tr><td><b>Split / metric</b></td><td>By host. Macro-F1 across the CWE classes present, because the classes are heavily imbalanced and accuracy would be dominated by the largest one.</td></tr>
+    <tr><td><b>Feeds</b></td><td>The attack graph. <code>vulProperty</code> is keyed on the weakness type, not on a CVE, which is the mechanism by which a CVE-less finding reaches the graph at all.</td></tr>
+  </tbody></table></div>
+  <p><b>Not yet decided:</b> whether to predict the full CWE list or a coarse grouping. The full
+     list gives many classes with very few examples each; a grouping is easier to learn but has to
+     be defined by us, and anything we define ourselves needs justifying.</p>
+
+  <h3>4. Correlation <span class="tag t-revise">Designed</span></h3>
+  <p>One stage, two operations that cannot share a method.</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:150px"></th><th>Merge duplicates</th><th>Historical links</th></tr></thead>
+    <tbody>
+      <tr><td><b>Does what</b></td><td>The same weakness reported by two tools, or twice in one report</td><td>Which weaknesses co-occur, and the same host at an earlier scan</td></tr>
+      <tr><td><b>Method</b></td><td><b>Rules.</b> No label exists for which pairs are the same finding, so supervised learning is not available at all</td><td><b>Association mining</b> over findings grouped by host, reporting support, confidence and lift</td></tr>
+      <tr><td><b>Match on</b></td><td>CVE where both name one; otherwise CWE plus the affected package and port</td><td>Package version and CWE, never the finding id</td></tr>
+      <tr><td><b>Output</b></td><td>Merged rows, with the contributing scanners retained</td><td>Link features: what a finding sits next to, and whether it persisted from an earlier scan</td></tr>
+    </tbody>
+  </table></div>
+  <div class="keep">
+    <p><b>The trap that will catch whoever implements the temporal half.</b> A rescan taken after
+       the host had silently received seven security fixes returned output <i>identical</i> to the
+       scan before them. A distribution backports the patch without advancing the version string
+       the scanner reads. So temporal correlation cannot be a diff of two report files. It has to
+       compare at package-version and CWE level, which is what the evidence snapshots provide.</p>
+  </div>
+  <p>A long time series is not needed for the demonstration: <code>target-b1</code> was captured
+     three times across 19 to 21 August, and the ActiveMQ container twice across 17 to 18 August.</p>
+
+  <h3>5. Feature engineering <span class="tag t-revise">Designed</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Correlated findings, plus the conditions the operator declares.</td></tr>
+    <tr><td><b>Output</b></td><td>One numeric vector per finding: roughly 30 structured dimensions plus a text block.</td></tr>
+    <tr><td><b>Technique</b></td><td>One-hot for low-cardinality categories; ordinal for <code>qod</code>; TF-IDF for the text, measured against a sentence embedding so that what the richer representation adds is quantified rather than assumed. <b>All encoders fit on the train split only.</b></td></tr>
+  </tbody></table></div>
+  <p>The four families that make up the vector:</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:190px">Family</th><th>Drawn from</th></tr></thead>
+    <tbody>
+      <tr><td><b>Report-level context</b></td><td><code>qod</code>, <code>solution_type</code>, <code>nvt_family</code>, <code>threat</code>, <code>severity</code>, port and whether it is host-level</td></tr>
+      <tr><td><b>Cross-tool agreement</b></td><td>How many scanners reported this weakness. Measured across two tools, which is the minimum that makes the feature meaningful, and that is a stated limitation</td></tr>
+      <tr><td><b>Co-occurrence</b></td><td>Link features from Correlation: what else sits on this host, what persisted from the previous scan</td></tr>
+      <tr><td><b>Your conditions</b></td><td>Declared by whoever runs ThreatRank. Maps onto SSVC's Mission Impact, whose five values are None, Non-Essential Degraded, MEF Support Crippled, MEF Failure, Mission Failure</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Detection confidence is included as a feature, and it is not sufficient on its own.</b>
+     Measured directly: of the fourteen findings on <code>target-b1</code> that could be given a
+     verdict, seven later confirmed correct and seven confirmed incorrect, <i>all fourteen</i>
+     carried qod 30. Both arise from the same version-inference method, so the signal does not
+     separate them.</p>
+
+  <h3>6. Exploit likelihood <span class="tag t-revise">Designed</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>A finding, with or without a CVE.</td></tr>
+    <tr><td><b>With a CVE</b></td><td>EPSS, the FIRST.org exploit prediction score, looked up per CVE. A published number, not something we compute.</td></tr>
+    <tr><td><b>Without a CVE</b></td><td><b>An EPSS surrogate.</b> A gradient boosting <b>regressor</b> is trained to predict EPSS from report-level features alone, using only features every finding has, then applied where EPSS does not exist. Target is <code>logit(EPSS)</code>, because EPSS is heavily skewed toward zero. Training set: the <b>682 distinct CVEs</b> in the corpus, scored from a pinned FIRST.org snapshot.</td></tr>
+    <tr><td><b>Supervision</b></td><td>KEV membership, on the CVE-bearing subset only. Nothing is retrained here: the corpus holds ten KEV positives, which is not a training set.</td></tr>
+    <tr><td><b>Output</b></td><td>One likelihood value per finding.</td></tr>
+  </tbody></table></div>
+  <div class="keep">
+    <p><b>This is not the regression that was rejected.</b> The rejected one would have regressed
+       onto EPSS as the answer key for risk, where the best possible result is a tie. Here EPSS is
+       being <i>imputed</i> where it is missing, and never used where it already exists. The
+       surrogate runs on the CVE-less subset only.</p>
+    <p><b>How we will know it failed.</b> Spearman correlation between predicted and true EPSS on
+       a held-out host split. <b>Below 0.3, report-level features do not carry EPSS-like signal</b>,
+       and that is itself a result worth reporting. The fallback is then to give CVE-less findings
+       a likelihood of zero and rank them by consequence alone.</p>
+  </div>
+  <p>KEV is the <b>label</b>. Using it as a feature would be target leakage, and it is worth
+     saying out loud because KEV is a public catalogue anyone could look up at runtime. If EPSS is
+     used as a feature, results are reported both with and without it, or the question "did we beat
+     EPSS" stops being answerable.</p>
+
+  <h3>7. Attack consequence <span class="tag t-run">Graph runs</span> <span class="tag t-revise">Scoring designed</span></h3>
+  <p>The engine builds, the adapter exists, and real findings have been through it. What is not
+     settled is how the resulting graph becomes a single number.</p>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Normalised findings, the CWE from Classification, and a topology file.</td></tr>
+    <tr><td><b>Engine</b></td><td>MulVAL on XSB Prolog 3.8.0. Logical rules, never trained, which is why this stage reaches every finding rather than only the CVE-bearing ones.</td></tr>
+    <tr><td><b>Adapter</b></td><td><code>findings_to_mulval.py</code>. MulVAL ships its own Nessus adapter and it cannot be used: it requires MySQL, it reads <code>.nessus</code> XML we do not have, and <b>it is keyed on the CVE identifier</b>, so a finding without one produces no fact and therefore no node. That last point is the CVE coverage gap, visible in the reference implementation's own code.</td></tr>
+    <tr><td><b>Output</b></td><td>An attack graph. Per finding, how many distinct routes reach an asset and how short the shortest one is.</td></tr>
+  </tbody></table></div>
+  <p><b>Measured, on one unauthenticated OpenVAS scan of one host:</b> 63 findings became 62
+     fact pairs and 2 service declarations, and produced a graph of <b>139 vertices and 252
+     arcs</b>, comprising 69 LEAF, 66 AND and 4 OR nodes. The goal
+     <code>execCode(targetB1,'www-data')</code> was reached. <b>23 of those findings carry no CVE,
+     and all 23 appear in the finished graph.</b> For scale, the example bundled with MulVAL
+     produces 26 vertices.</p>
+  <p>Four rules fire: <i>local exploit</i>, <i>remote exploit of a server program</i>,
+     <i>multi-hop access</i> and <i>direct network access</i>. Multi-hop access is the
+     lateral-movement machinery, and it works; it currently matches only the
+     <code>hacl(H,H,_,_)</code> self-loop because the lab is one flat network with one target. The
+     rule needs no change. The topology does.</p>
+  <div class="keep">
+    <p><b>Three things no scanner can supply, which the adapter therefore refuses to invent.</b>
+       They are declared in a topology file instead.</p>
+    <p><code>hacl</code>, reachability: a scan of one host says nothing about what that host can
+       reach. <b>The service account:</b> <code>networkServiceInfo</code>'s last argument is the
+       account a service runs as, and it becomes the privilege the attacker is modelled as
+       gaining; an unauthenticated scan cannot see it. <b><code>attackerLocated</code>:</b> where
+       the attacker starts is a modelling choice, not a measurement.</p>
+  </div>
+  <p><b>The consequence value is one over the shortest attack depth.</b> A finding that lies on
+     no path to the goal scores <b>0</b>. Otherwise it scores <b>1/d</b>, where <i>d</i> is the
+     number of rule nodes on the shortest attacker-to-goal path passing through it. The result is
+     bounded on (0, 1], needs no training, and reads in plain language as how many steps from here
+     the goal is. A finding that grants the goal outright has d = 1 and scores 1.0.</p>
+  <p><b>Path counting was considered and rejected.</b> Path counts explode combinatorially and end
+     up measuring the shape of the graph rather than the importance of the finding. Note also that
+     interchangeable findings correctly receive identical consequence: the thirty-four Apache
+     findings all yield the same <code>execCode</code>, and deduplicating the remediation is the
+     Prioritise stage's job, not this one.</p>
+  <div class="keep">
+    <p><b>A degeneracy we already know about.</b> On the present one-host flat lab, almost
+       everything scores d = 1, so the measure discriminates nothing yet. That is an argument for
+       building the multi-segment lab, not for choosing a different formula.</p>
+    <p><b>How we will know it failed.</b> Once separate segments exist, if more than roughly 80%
+       of findings still share a single value of <i>d</i>, the measure is degenerate. The fallback
+       is binary reaches-the-goal, reported together with the degeneracy.</p>
+  </div>
+  <p>Until Classification runs, every finding is also emitted with consequence
+     <code>privEscalation</code>, because that is the only value the rule base acts on for server
+     programs. <b>Any consequence number produced today demonstrates that the pipeline runs; it is
+     not a measurement of consequence and must not be reported as one.</b></p>
+
+  <h3>8. Risk prediction <span class="tag t-revise">Designed</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Both head values, each bounded on [0, 1].</td></tr>
+    <tr><td><b>Combination</b></td><td><b>risk = likelihood &times; consequence.</b> Fixed, not learned. The product is bounded on [0, 1] because both inputs are.</td></tr>
+    <tr><td><b>Output</b></td><td>One risk score per finding, computed identically whether or not the finding names a CVE.</td></tr>
+  </tbody></table></div>
+  <p><b>Why the weighting is not learned, in one number: the corpus holds seventeen KEV
+     positives.</b> Across all 632 archived findings, 436 carry a CVE and 17 touch the KEV
+     catalogue. Split by host, roughly ten of those land in any training fold. That is not a
+     training set, and a weighting fitted on it would be noise given a decimal point. Multiplying
+     probability by impact is the textbook definition of risk, needs no label at all, and applies
+     to a finding with no CVE exactly as it applies to one with a CVE, so the extrapolation
+     problem disappears rather than being managed.</p>
+  <div class="keep">
+    <p><b>The learned version is registered, not abandoned.</b> If the corpus reaches the twenty
+       hosts the Nessus licence allows, train a gradient boosting classifier taking both head
+       values as features and KEV as the label on the CVE-bearing subset, and compare it against
+       the product by NDCG on held-out hosts. <b>If it wins by a margin that survives the host
+       split, adopt it in Deliverable 3</b> and state the extrapolation as a limitation. If it
+       does not, the product stands and the comparison is itself the result.</p>
+  </div>
+  <p><b>Why classification and not regression.</b> Regression needs a continuous label and none
+     survives scrutiny. EPSS cannot be the answer key, because Q1 asks whether we beat EPSS and the
+     best possible result would be a tie. CVSS cannot, because regressing onto it builds a CVSS
+     predictor. Time from disclosure to KEV entry exists for 1.8% of findings and is censored data,
+     needing survival analysis rather than regression. A composite we invent is barred outright:
+     the team may not define a metric and then grade itself against it.</p>
+  <p>The reasoning above is why this stage no longer reads "open". It may still be wrong, and
+     the comparison registered in the box says precisely what would show that.</p>
+
+  <h3>9. Prioritise <span class="tag t-revise">Designed</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>Scored findings, the cost of each fix action, and a budget.</td></tr>
+    <tr><td><b>Model</b></td><td><b>Learning to rank.</b> Query groups are hosts. Relevance grades: 2 for KEV membership, 1 for access the scan confirmed, 0 otherwise.</td></tr>
+    <tr><td><b>Output</b></td><td>An ordered recommendation that fits the budget.</td></tr>
+    <tr><td><b>Fallback</b></td><td>Sort by score, then knapsack under the budget. No learning.</td></tr>
+  </tbody></table></div>
+  <p><b>The fallback is the likely outcome, and that is registered in advance as Gate 3.</b> LTR
+     groups by host and the Nessus licence caps the lab at 20 hosts, so the ceiling is 20 query
+     groups. A standard LTR benchmark has 10,000. The registered prediction is that LTR will not
+     beat sorting by the classifier score. Registering it before the attempt is what makes the
+     answer a result either way.</p>
+
+  <h3>10. False positive check <span class="tag t-run">Running</span></h3>
+  <div class="tbl"><table><tbody>
+    <tr><td style="width:120px"><b>Input</b></td><td>The normalised table, plus the package versions captured <b>at scan time</b>.</td></tr>
+    <tr><td><b>Process</b></td><td>Each cited CVE is compared against the installed version using <code>dpkg --compare-versions</code>, not string comparison. Scan-time versions are a required argument, so the original mistake cannot be repeated silently.</td></tr>
+    <tr><td><b>Output</b></td><td>A verdict per finding: false positive, true positive, or undetermined.</td></tr>
+    <tr><td><b>Limitation</b></td><td>Reading a package list needs access to the host. This works only because we built the machines. A real assessment scans hosts the analyst does not own.</td></tr>
+  </tbody></table></div>
+  <p><b>Measured on <code>target-b1</code>:</b> of 40 findings carrying a CVE, 7 false positive,
+     7 true positive, 26 undetermined. Among Critical and High, 6 false and 2 true of 20.</p>
+  <div class="keep">
+    <p><b>Why the versions must be captured at scan time and never reconstructed.</b>
+       <code>unattended-upgrades</code> once began six seconds before a scan started and finished
+       ninety seconds after it ended. Changelogs read hours later described a machine that no
+       longer existed, and seven genuine findings were published as false positives before the
+       result was withdrawn.</p>
   </div>
 
   <h3>Inside the attack graph</h3>
@@ -569,6 +730,7 @@
      is what Gate 2 was registered to find out. It needed five changed lines, four of them build
      flags and none of them in the rule base.</p>
 </section>
+
 
 <section>
   <h2>Why the label was split</h2>
