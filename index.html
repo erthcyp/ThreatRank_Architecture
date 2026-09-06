@@ -129,7 +129,7 @@
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">CSS453 senior project &middot; topic 33 &middot; revised 25 Aug 2026</div>
+  <div class="eyebrow">CSS453 senior project &middot; topic 33 &middot; revised 6 Sep 2026</div>
   <h1>ThreatRank Architecture</h1>
   <p>Machine learning risk prediction and prioritisation for vulnerability assessment reports.
      This page shows the pipeline as it actually stands: which stages run today, which are
@@ -180,13 +180,13 @@
   <text x="164" y="50" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".45" letter-spacing="1">THREATRANK</text>
 
   <rect x="300" y="40" width="428" height="68" rx="8" fill="var(--surface-2)" stroke="var(--open)" stroke-width="1.5" stroke-dasharray="5 4"/>
-  <text x="312" y="56" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--open)" letter-spacing="1">OFFLINE . TRAINING . NEVER USED AS A FEATURE</text>
+  <text x="312" y="56" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--open)" letter-spacing="1">OFFLINE . TRAINING SIGNALS . KEV IS NEVER A FEATURE</text>
   <text x="312" y="74" font-size="9.5" fill="currentColor">CWE labels from NVD</text>
   <text x="470" y="74" font-size="9.5" fill="var(--open)" font-weight="600">trains Classification</text>
-  <text x="312" y="88" font-size="9.5" fill="currentColor">CISA KEV membership</text>
-  <text x="470" y="88" font-size="9.5" fill="var(--open)" font-weight="600">trains Risk prediction</text>
+  <text x="312" y="88" font-size="9.5" fill="currentColor">EPSS scores from FIRST</text>
+  <text x="470" y="88" font-size="9.5" fill="var(--open)" font-weight="600">trains the likelihood surrogate</text>
   <text x="312" y="102" font-size="9.5" fill="currentColor">KEV plus confirmed access</text>
-  <text x="470" y="102" font-size="9.5" fill="var(--open)" font-weight="600">trains Prioritisation, graded</text>
+  <text x="470" y="102" font-size="9.5" fill="var(--open)" font-weight="600">grade Prioritisation and evaluation</text>
 
   <text x="16" y="158" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">INPUT</text>
   <rect x="16" y="168" width="120" height="130" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
@@ -319,18 +319,18 @@
   <path d="M386,759 L398,759 L398,700" fill="none" stroke="var(--headB)" stroke-width="1.8"/>
   <line x1="398" y1="700" x2="406" y2="700" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
-  <rect x="410" y="610" width="150" height="180" rx="8" fill="var(--surface)" stroke="var(--open)" stroke-width="1.8" stroke-dasharray="3 3"/>
-  <circle cx="424" cy="626" r="4.5" fill="var(--open)"/>
+  <rect x="410" y="610" width="150" height="180" rx="8" fill="var(--surface)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <circle cx="424" cy="626" r="4.5" fill="var(--designed)"/>
   <text x="485" y="636" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Risk prediction</text>
-  <rect x="422" y="644" width="126" height="18" rx="9" fill="var(--surface-2)" stroke="var(--open)" stroke-opacity=".6"/>
-  <text x="485" y="657" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--open)" letter-spacing=".05em">GRADIENT BOOSTING</text>
-  <text x="485" y="678" text-anchor="middle" font-size="9.5" fill="currentColor">both heads and the features</text>
-  <text x="485" y="691" text-anchor="middle" font-size="9.5" fill="currentColor">into one score per finding</text>
-  <rect x="422" y="700" width="126" height="22" rx="4" fill="var(--open-bg)" stroke="var(--open)" stroke-opacity=".5"/>
+  <rect x="422" y="644" width="126" height="18" rx="9" fill="var(--surface-2)" stroke="var(--designed)" stroke-opacity=".6"/>
+  <text x="485" y="657" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--designed)" letter-spacing=".05em">FIXED FORMULA</text>
+  <text x="485" y="678" text-anchor="middle" font-size="9.5" fill="currentColor">likelihood &#215; consequence</text>
+  <text x="485" y="691" text-anchor="middle" font-size="9.5" fill="currentColor">both bounded on 0 to 1</text>
+  <rect x="422" y="700" width="126" height="22" rx="4" fill="var(--designed-bg)" stroke="var(--designed)" stroke-opacity=".5"/>
   <text x="485" y="715" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">risk score</text>
-  <text x="485" y="738" text-anchor="middle" font-size="9" fill="var(--open)" font-weight="600">the weighting is learned,</text>
-  <text x="485" y="750" text-anchor="middle" font-size="9" fill="var(--open)" font-weight="600">not chosen by us</text>
-  <text x="485" y="768" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">binary on KEV, subset only</text>
+  <text x="485" y="738" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">only 17 KEV positives:</text>
+  <text x="485" y="750" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">not enough to learn it</text>
+  <text x="485" y="768" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">learned version registered</text>
   <line x1="560" y1="700" x2="580" y2="700" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
   <rect x="584" y="610" width="150" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
@@ -582,7 +582,42 @@
      used as a feature, results are reported both with and without it, or the question "did we beat
      EPSS" stops being answerable.</p>
 
-    <p><b>Why this, and where it came from.</b> EPSS is used exactly as Jacobs et al. published
+    <h4 style="margin:22px 0 8px;font-size:14px">How other work computes likelihood, and where ours sits</h4>
+  <p>Four distinct answers exist in the literature we hold, and the differences are not cosmetic:
+     they disagree about what a likelihood even <i>is</i>.</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:150px">Approach</th><th>What likelihood is</th><th>How it is computed</th><th style="width:92px">Needs a CVE</th></tr></thead>
+    <tbody>
+      <tr><td><b>EPSS</b><br>Jacobs et al. 2023</td><td>Probability of exploitation activity observed in the wild within 30 days</td><td>XGBoost classifier over 1,164 features, labelled by IDS, IPS and honeypot telemetry from Fortinet, AlienVault, Shadowserver and GreyNoise. 192,035 vulnerabilities, 6.4M exploitation observations, 6.4% of vulnerabilities ever observed exploited. AUC-PR 0.779 in v3</td><td>Yes</td></tr>
+      <tr><td><b>Time to exploit</b><br>Hong and Lee 2025</td><td>How many days until exploitation, not whether</td><td>Out-of-fold stacking ensemble, framed as regression. Gini importance: CVSS 0.5040, description text 0.4846, event count 0.0114</td><td>Yes</td></tr>
+      <tr><td><b>Management chaining</b><br>Shimizu and Hashimoto 2026</td><td>A gate, passed or not</td><td>No model at all. KEV membership or EPSS above 0.088, then CVSS above 7.0. ROC-AUC 0.8678; 96.9% workload reduction while catching 48.9% of exploited vulnerabilities</td><td>Yes, at all three gates</td></tr>
+      <tr><td><b>SSVC</b><br>Spring et al. 2020</td><td>An ordinal judgement: None, PoC, Active</td><td>A human analyst answers, per vulnerability</td><td><b>No</b></td></tr>
+      <tr><td><b>ThreatRank</b></td><td>EPSS where a CVE exists, a learned surrogate where it does not</td><td>Lookup, then gradient boosting regression on report-level features</td><td><b>No</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="keep">
+    <p><b>Two of these findings shaped our design directly.</b></p>
+    <p><b>EPSS's label is global exploitation telemetry, which we cannot obtain.</b> Not for want
+       of effort: it requires a sensor network. That is exactly why the surrogate targets EPSS
+       itself rather than exploitation. We borrow their label through their published output
+       instead of trying to reproduce it.</p>
+    <p><b>SSVC scores exploitation without needing a CVE, and says so explicitly.</b> Its PoC value
+       is defined as exploit code traded on underground fora, <i>or</i> a public proof of concept
+       in Metasploit or ExploitDB, <i>or</i> that "the vulnerability has a well-known method of
+       exploitation". The third criterion is about whether a method is known, not whether an
+       identifier was issued. An exposed admin interface with default credentials qualifies.
+       <b>Giving a CVE-less finding a likelihood is therefore not something we invented; it is
+       SSVC's Exploitation decision point, automated.</b></p>
+  </div>
+  <p>The third result is a warning rather than a foundation. Hong and Lee's feature importances say
+     that CVSS and the description text carry almost all of the signal and that event counts carry
+     almost none. <b>Both of the strong ones are available for every finding we hold, with or
+     without a CVE</b>, as <code>severity</code> and <code>nvt_name</code>. That is published
+     evidence that the surrogate's feature set is the right one, and it is also the reason the
+     falsification threshold is set where it is: if features this informative in a published model
+     cannot reach a Spearman of 0.3 here, the problem is our data, and that is worth reporting.</p>
+
+  <p><b>Why this, and where it came from.</b> EPSS is used exactly as Jacobs et al. published
      it, as a lookup and as a baseline, never recomputed. <b>The surrogate is our adaptation of an
      established pattern.</b> Hong and Lee predict time to exploit from CVSS, the CVE description
      and proof-of-concept counts, which is the same shape of problem: infer an exploitation-related
