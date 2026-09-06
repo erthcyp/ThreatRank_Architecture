@@ -436,6 +436,13 @@
      names no tool at the input: it accepts anything exporting <code>.xml</code>,
      <code>.json</code> or <code>.csv</code>.</p>
 
+    <p><b>Why this, and where it came from.</b> The one paper we hold that reads scanner reports
+     directly is the OpenVAS and Tenable extraction work, and it uses a language model to do it.
+     <b>We deliberately went the other way.</b> This project's results are checked by regenerating
+     every CSV and diffing it byte for byte against the archive, which an LLM extraction cannot
+     survive. Deterministic per-tool adapters are ordinary engineering and we claim nothing for
+     them, but the choice is deliberate and the reason is reproducibility.</p>
+
   <h3>2. Normalise <span class="tag t-run">Running</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>Parsed rows from any tool.</td></tr>
@@ -461,6 +468,14 @@
      family <code>General</code>, nvt_name <i>OpenBSD OpenSSH &lt; 9.2 Unspecified Vulnerability</i>.
      Every stage after this point has to handle both.</p>
 
+    <p><b>Why this, and where it came from.</b> The schema is ours. We found no published
+     cross-scanner finding schema to adopt, which is unsurprising: most prioritisation work starts
+     from a CVE list rather than from tool output. Its justification is therefore empirical rather
+     than borrowed. Every column exists because a later stage reads it, and the CVE-related columns
+     are split into <code>has_cve</code>, <code>cves</code> and <code>generic_nvt</code> precisely
+     so that a finding without a CVE stays a first-class row instead of being dropped at the door,
+     which is what the pipeline is for.</p>
+
   <h3>3. Classification <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>One normalised finding.</td></tr>
@@ -474,6 +489,15 @@
   <p><b>Not yet decided:</b> whether to predict the full CWE list or a coarse grouping. The full
      list gives many classes with very few examples each; a grouping is easier to learn but has to
      be defined by us, and anything we define ourselves needs justifying.</p>
+
+    <p><b>Why this, and where it came from.</b> <b>The technique is borrowed and the target is
+     changed.</b> Predicting a vulnerability's attributes from its text is well established:
+     multi-modal CVSS severity prediction, the CVSS scoring framework of Amirov et al., and
+     XplainCVSS all learn severity from a CVE description. Every one of them needs the CVE to
+     exist in NVD first. We keep their method, text features into a boosted tree, and swap the
+     target from CVSS to CWE, because a weakness type can be assigned to a finding that names no
+     CVE at all. That single substitution is what lets the attack graph reach the CVE-less
+     findings, and it is the adaptation rather than the technique that is ours.</p>
 
   <h3>4. Correlation <span class="tag t-revise">Designed</span></h3>
   <p>One stage, two operations that cannot share a method.</p>
@@ -495,6 +519,14 @@
   </div>
   <p>A long time series is not needed for the demonstration: <code>target-b1</code> was captured
      three times across 19 to 21 August, and the ActiveMQ container twice across 17 to 18 August.</p>
+
+    <p><b>Why this, and where it came from.</b> The stage exists because the advisor named
+     correlation as the project's main contribution and asked for it to be historical. The mining
+     half applies classical association rule mining, reporting support, confidence and lift, to a
+     new unit: weaknesses co-occurring on a host rather than items in a basket. <b>The merging half
+     is ours out of necessity, not ambition.</b> No label exists saying which two findings are the
+     same finding, so supervised learning is unavailable in principle, not merely inconvenient,
+     and rules are what remains.</p>
 
   <h3>5. Feature engineering <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
@@ -518,6 +550,15 @@
      carried qod 30. Both arise from the same version-inference method, so the signal does not
      separate them.</p>
 
+    <p><b>Why this, and where it came from.</b> <b>The conditions family is borrowed openly, and
+     saying so is what keeps the rest of the claim honest.</b> It maps onto SSVC's Mission Impact,
+     whose five values we adopt verbatim rather than inventing a parallel vocabulary, and Renney
+     et al. reach the same idea through a local layer that enriches a global per-CVE score with
+     organisational context. Both are prior art for context-dependent prioritisation and the
+     project must not claim to have originated it. The report-level families are ours, and they
+     are the part Q1 actually tests: whether what a report says about a finding adds anything over
+     what a catalogue says about its CVE.</p>
+
   <h3>6. Exploit likelihood <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>A finding, with or without a CVE.</td></tr>
@@ -540,6 +581,13 @@
      saying out loud because KEV is a public catalogue anyone could look up at runtime. If EPSS is
      used as a feature, results are reported both with and without it, or the question "did we beat
      EPSS" stops being answerable.</p>
+
+    <p><b>Why this, and where it came from.</b> EPSS is used exactly as Jacobs et al. published
+     it, as a lookup and as a baseline, never recomputed. <b>The surrogate is our adaptation of an
+     established pattern.</b> Hong and Lee predict time to exploit from CVSS, the CVE description
+     and proof-of-concept counts, which is the same shape of problem: infer an exploitation-related
+     quantity from metadata rather than from the exploit itself. We apply that shape where they
+     could not, to findings that have no CVE and therefore no description in NVD to start from.</p>
 
   <h3>7. Attack consequence <span class="tag t-run">Graph runs</span> <span class="tag t-revise">Scoring designed</span></h3>
   <p>The engine builds, the adapter exists, and real findings have been through it. What is not
@@ -593,6 +641,15 @@
      programs. <b>Any consequence number produced today demonstrates that the pipeline runs; it is
      not a measurement of consequence and must not be reported as one.</b></p>
 
+    <p><b>Why this, and where it came from.</b> MulVAL is not ours and neither is the idea of
+     scoring a vulnerability by where it sits in an attack graph: TriAssetRank ranks
+     vulnerabilities, exploits and privileges together for countermeasure selection, and
+     DefenceRank ranks defences from graph analysis. <b>Both rank CVE-bearing vulnerabilities.</b>
+     Our change is upstream of the ranking: we feed the graph CWE-typed findings, so the nodes
+     include weaknesses that no CVE-keyed pipeline could place. Shortest path to a goal is a
+     standard attack-graph metric and we claim no novelty for it. The 1/d normalisation, and
+     applying it per finding rather than per host, are ours.</p>
+
   <h3>8. Risk prediction <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>Both head values, each bounded on [0, 1].</td></tr>
@@ -623,6 +680,15 @@
   <p>The reasoning above is why this stage no longer reads "open". It may still be wrong, and
      the comparison registered in the box says precisely what would show that.</p>
 
+    <p><b>Why this, and where it came from.</b> <b>Risk as probability times impact is the
+     textbook definition and we claim nothing for it.</b> Choosing it over a learned weighting is
+     the decision, and it was forced by a measurement rather than a preference. The closest
+     published neighbour is Shimizu and Hashimoto, who chain KEV membership, then EPSS above
+     0.088, then CVSS above 7.0 into a four-level decision tree. We differ in two ways that follow
+     from the same commitment: the output is continuous rather than a bucket, and it is defined
+     for findings on which their first two gates cannot be evaluated at all, because those gates
+     require a CVE.</p>
+
   <h3>9. Prioritise <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>Scored findings, the cost of each fix action, and a budget.</td></tr>
@@ -635,6 +701,13 @@
      groups. A standard LTR benchmark has 10,000. The registered prediction is that LTR will not
      beat sorting by the classifier score. Registering it before the attempt is what makes the
      answer a result either way.</p>
+
+    <p><b>Why this, and where it came from.</b> Ranking remediation under a fixed defence budget
+     is the ground DefenceRank and TriAssetRank already occupy, and the equal-budget framing is
+     the advisor's, recorded as Q3. Learning to rank is standard information retrieval machinery
+     and the knapsack fallback is ordinary operations research. <b>Nothing here is novel, and the
+     interesting part is expected to be the negative result</b>: whether 20 query groups can
+     support a ranker at all, which is registered as Gate 3 with the prediction that they cannot.</p>
 
   <h3>10. False positive check <span class="tag t-run">Running</span></h3>
   <div class="tbl"><table><tbody>
@@ -652,6 +725,15 @@
        longer existed, and seven genuine findings were published as false positives before the
        result was withdrawn.</p>
   </div>
+
+    <p><b>Why this, and where it came from.</b> Mandl et al. evaluate vulnerability detection
+     against known ground truth across ecosystems, which is the same question asked of a different
+     input, and the IEEE S&amp;P study of vendor patching behaviour supplies the real-world reason
+     the problem exists at all. <b>Our ground truth is unusual and its limitation is the reason:</b>
+     we use the package versions installed on the host at scan time, which is only available
+     because we built the machines. A real assessment scans hosts the analyst does not own, so this
+     stage measures how bad version-inference false positives are; it is not a component anyone
+     could deploy.</p>
 
   <h3>Inside the attack graph</h3>
   <p>The graph is the one stage where nothing is invented: MulVAL already fixes the vocabulary,
