@@ -87,6 +87,8 @@
   .chip b{font-weight:600}
   .dot{width:9px;height:9px;border-radius:50%;flex:none}
   .d-built{background:var(--built)} .d-designed{background:var(--designed)} .d-open{background:var(--open)}
+    .refs{padding-left:22px;font-size:12.5px;line-height:1.75;color:var(--ink-2)}
+    .refs li{margin-bottom:7px}
     .d-headA{background:var(--headA)}
     .d-headB{background:var(--headB)}
 
@@ -185,8 +187,8 @@
   <text x="470" y="74" font-size="9.5" fill="var(--open)" font-weight="600">trains Classification</text>
   <text x="312" y="88" font-size="9.5" fill="currentColor">EPSS scores from FIRST</text>
   <text x="470" y="88" font-size="9.5" fill="var(--open)" font-weight="600">trains the likelihood surrogate</text>
-  <text x="312" y="102" font-size="9.5" fill="currentColor">KEV plus confirmed access</text>
-  <text x="470" y="102" font-size="9.5" fill="var(--open)" font-weight="600">grade Prioritisation and evaluation</text>
+  <text x="312" y="102" font-size="9.5" fill="currentColor">CISA KEV membership</text>
+  <text x="470" y="102" font-size="9.5" fill="var(--open)" font-weight="600">trains Risk prediction, grades ranking</text>
 
   <text x="16" y="158" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" fill-opacity=".5" letter-spacing="1">INPUT</text>
   <rect x="16" y="168" width="120" height="130" rx="6" fill="var(--surface-2)" stroke="currentColor" stroke-opacity=".3"/>
@@ -290,9 +292,9 @@
   <text x="210" y="608" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">has CVE</text>
   <text x="266" y="608" font-size="10" fill="currentColor">EPSS, a public score</text>
   <text x="210" y="626" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--headA)">no CVE</text>
-  <text x="266" y="626" font-size="9" fill="currentColor">access the scan proved</text>
-  <text x="210" y="644" font-size="8.5" fill="currentColor" fill-opacity=".6">not retrained here: 10 KEV</text>
-  <text x="210" y="655" font-size="8.5" fill="currentColor" fill-opacity=".6">positives is not a training set</text>
+  <text x="266" y="626" font-size="9" fill="currentColor">a learned surrogate</text>
+  <text x="210" y="644" font-size="8.5" fill="currentColor" fill-opacity=".6">GRADIENT BOOSTING regressor,</text>
+  <text x="210" y="655" font-size="8.5" fill="currentColor" fill-opacity=".6">trained on the 682 CVEs we hold</text>
 
   <rect x="196" y="680" width="190" height="158" rx="8" fill="var(--headB-bg)" stroke="var(--headB)" stroke-width="1.8" stroke-dasharray="6 4"/>
   <text x="291" y="700" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Attack consequence</text>
@@ -323,14 +325,14 @@
   <circle cx="424" cy="626" r="4.5" fill="var(--designed)"/>
   <text x="485" y="636" text-anchor="middle" font-size="12.5" font-weight="600" fill="currentColor">Risk prediction</text>
   <rect x="422" y="644" width="126" height="18" rx="9" fill="var(--surface-2)" stroke="var(--designed)" stroke-opacity=".6"/>
-  <text x="485" y="657" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--designed)" letter-spacing=".05em">FIXED FORMULA</text>
-  <text x="485" y="678" text-anchor="middle" font-size="9.5" fill="currentColor">likelihood &#215; consequence</text>
-  <text x="485" y="691" text-anchor="middle" font-size="9.5" fill="currentColor">both bounded on 0 to 1</text>
+  <text x="485" y="657" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--designed)" letter-spacing=".05em">GRADIENT BOOSTING</text>
+  <text x="485" y="678" text-anchor="middle" font-size="9.5" fill="currentColor">both heads and the features</text>
+  <text x="485" y="691" text-anchor="middle" font-size="9.5" fill="currentColor">into one score per finding</text>
   <rect x="422" y="700" width="126" height="22" rx="4" fill="var(--designed-bg)" stroke="var(--designed)" stroke-opacity=".5"/>
   <text x="485" y="715" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">risk score</text>
-  <text x="485" y="738" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">only 17 KEV positives:</text>
-  <text x="485" y="750" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">not enough to learn it</text>
-  <text x="485" y="768" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">learned version registered</text>
+  <text x="485" y="738" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">KEV label, CVE subset only</text>
+  <text x="485" y="750" text-anchor="middle" font-size="9" fill="var(--designed)" font-weight="600">17 positives may be too few</text>
+  <text x="485" y="768" text-anchor="middle" font-size="8.5" fill="currentColor" fill-opacity=".55">fallback: multiply the heads</text>
   <line x1="560" y1="700" x2="580" y2="700" stroke="currentColor" stroke-width="1.6" marker-end="url(#ar)"/>
 
   <rect x="584" y="610" width="150" height="180" rx="8" fill="var(--designed-bg)" stroke="var(--designed)" stroke-width="1.8" stroke-dasharray="6 4"/>
@@ -424,6 +426,28 @@
      proposals meant to be revised in Deliverable 3 on evidence, not guesses dressed up as
      conclusions.</p>
 
+  <div class="keep">
+    <h3 style="margin-top:0">Where machine learning is used</h3>
+    <p>Worth stating plainly, because two of these stages carry a no-learning fallback and that can
+       read as though the models had been removed. <b>Four stages learn from data.</b> The first
+       three are gradient boosted trees <b>[19]</b>, with XGBoost the intended library; the fourth
+       is a learning-to-rank model.</p>
+    <div class="tbl"><table>
+      <thead><tr><th style="width:190px">Stage</th><th>What the model predicts</th><th style="width:150px">Trained on</th></tr></thead>
+      <tbody>
+        <tr><td><b>3. Classification</b></td><td>a weakness type for every finding</td><td>CWE assignments NVD publishes per CVE</td></tr>
+        <tr><td><b>6. Exploit likelihood</b></td><td>an EPSS value where none is published</td><td>the 682 distinct CVEs in the corpus</td></tr>
+        <tr><td><b>8. Risk prediction</b></td><td>one risk score from both heads and the features</td><td>KEV membership, on the CVE-bearing subset</td></tr>
+        <tr><td><b>9. Prioritise</b></td><td>an ordering over scored findings</td><td>KEV plus access the scan confirmed, graded</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>The only component computed without learning is attack consequence,</b> which is
+       derived by logical rules over an attack graph and therefore needs no label. That is
+       deliberate: it is what allows consequence to be defined for every finding rather than only
+       for the labelled subset. Stages 8 and 9 each carry a fallback requiring no learning, fixed
+       in advance and chosen by evaluation rather than by preference.</p>
+  </div>
+
   <h3>1. Parse <span class="tag t-run">Running</span></h3>
   <div class="tbl"><table><tbody>
     <tr><td style="width:120px"><b>Input</b></td><td>Whatever one scanner exports. OpenVAS gives Greenbone XML, a tree of <code>&lt;result&gt;</code> elements. Nessus gives JSON pulled from the local REST API, because Essentials disables file export, so the API is the only way out.</td></tr>
@@ -437,7 +461,8 @@
      <code>.json</code> or <code>.csv</code>.</p>
 
     <p><b>Why this, and where it came from.</b> The one paper we hold that reads scanner reports
-     directly is the OpenVAS and Tenable extraction work, and it uses a language model to do it.
+     directly is the OpenVAS and Tenable extraction work of Machado et al. <b>[15]</b>, and it uses
+     a language model to do it.
      <b>We deliberately went the other way.</b> This project's results are checked by regenerating
      every CSV and diffing it byte for byte against the archive, which an LLM extraction cannot
      survive. Deterministic per-tool adapters are ordinary engineering and we claim nothing for
@@ -470,7 +495,8 @@
 
     <p><b>Why this, and where it came from.</b> The schema is ours. We found no published
      cross-scanner finding schema to adopt, which is unsurprising: most prioritisation work starts
-     from a CVE list rather than from tool output. Its justification is therefore empirical rather
+     from a CVE list rather than from tool output, as the prioritisation survey <b>[14]</b> makes
+     clear. Its justification is therefore empirical rather
      than borrowed. Every column exists because a later stage reads it, and the CVE-related columns
      are split into <code>has_cve</code>, <code>cves</code> and <code>generic_nvt</code> precisely
      so that a finding without a CVE stays a first-class row instead of being dropped at the door,
@@ -492,9 +518,9 @@
 
     <p><b>Why this, and where it came from.</b> <b>The technique is borrowed and the target is
      changed.</b> Predicting a vulnerability's attributes from its text is well established:
-     multi-modal CVSS severity prediction, the CVSS scoring framework of Amirov et al., and
-     XplainCVSS all learn severity from a CVE description. Every one of them needs the CVE to
-     exist in NVD first. We keep their method, text features into a boosted tree, and swap the
+     multi-modal CVSS severity prediction <b>[9]</b>, the CVSS scoring framework of Amirov et al.
+     <b>[8]</b>, and XplainCVSS <b>[11]</b> all learn severity from a CVE description. Every one of them needs the CVE to
+     exist in NVD first. We keep their method, text features into a boosted tree <b>[19]</b>, and swap the
      target from CVSS to CWE, because a weakness type can be assigned to a finding that names no
      CVE at all. That single substitution is what lets the attack graph reach the CVE-less
      findings, and it is the adaptation rather than the technique that is ours.</p>
@@ -522,8 +548,8 @@
 
     <p><b>Why this, and where it came from.</b> The stage exists because the advisor named
      correlation as the project's main contribution and asked for it to be historical. The mining
-     half applies classical association rule mining, reporting support, confidence and lift, to a
-     new unit: weaknesses co-occurring on a host rather than items in a basket. <b>The merging half
+     half applies association rule mining to a new unit, following the approach Rahman and Williams
+     <b>[20]</b> take to adversarial techniques, reporting support, confidence and lift over weaknesses co-occurring on a host rather than items in a basket. <b>The merging half
      is ours out of necessity, not ambition.</b> No label exists saying which two findings are the
      same finding, so supervised learning is unavailable in principle, not merely inconvenient,
      and rules are what remains.</p>
@@ -551,9 +577,9 @@
      separate them.</p>
 
     <p><b>Why this, and where it came from.</b> <b>The conditions family is borrowed openly, and
-     saying so is what keeps the rest of the claim honest.</b> It maps onto SSVC's Mission Impact,
+     saying so is what keeps the rest of the claim honest.</b> It maps onto SSVC's Mission Impact <b>[12]</b>,
      whose five values we adopt verbatim rather than inventing a parallel vocabulary, and Renney
-     et al. reach the same idea through a local layer that enriches a global per-CVE score with
+     et al. <b>[7]</b> reach the same idea through a local layer that enriches a global per-CVE score with
      organisational context. Both are prior art for context-dependent prioritisation and the
      project must not claim to have originated it. The report-level families are ours, and they
      are the part Q1 actually tests: whether what a report says about a finding adds anything over
@@ -580,7 +606,7 @@
   <p>KEV is the <b>label</b>. Using it as a feature would be target leakage, and it is worth
      saying out loud because KEV is a public catalogue anyone could look up at runtime. If EPSS is
      used as a feature, results are reported both with and without it, or the question "did we beat
-     EPSS" stops being answerable.</p>
+     EPSS" stops being answerable. The same discipline applies to the train and test split: random splitting is known to inflate apparent performance on vulnerability data <b>[16]</b>, so results are reported under host-level and chronological splits too.</p>
 
     <h4 style="margin:22px 0 8px;font-size:14px">How other work computes likelihood, and where ours sits</h4>
   <p>Four distinct answers exist in the literature we hold, and the differences are not cosmetic:
@@ -588,10 +614,10 @@
   <div class="tbl"><table>
     <thead><tr><th style="width:150px">Approach</th><th>What likelihood is</th><th>How it is computed</th><th style="width:92px">Needs a CVE</th></tr></thead>
     <tbody>
-      <tr><td><b>EPSS</b><br>Jacobs et al. 2023</td><td>Probability of exploitation activity observed in the wild within 30 days</td><td>XGBoost classifier over 1,164 features, labelled by IDS, IPS and honeypot telemetry from Fortinet, AlienVault, Shadowserver and GreyNoise. 192,035 vulnerabilities, 6.4M exploitation observations, 6.4% of vulnerabilities ever observed exploited. AUC-PR 0.779 in v3</td><td>Yes</td></tr>
-      <tr><td><b>Time to exploit</b><br>Hong and Lee 2025</td><td>How many days until exploitation, not whether</td><td>Out-of-fold stacking ensemble, framed as regression. Gini importance: CVSS 0.5040, description text 0.4846, event count 0.0114</td><td>Yes</td></tr>
-      <tr><td><b>Management chaining</b><br>Shimizu and Hashimoto 2026</td><td>A gate, passed or not</td><td>No model at all. KEV membership or EPSS above 0.088, then CVSS above 7.0. ROC-AUC 0.8678; 96.9% workload reduction while catching 48.9% of exploited vulnerabilities</td><td>Yes, at all three gates</td></tr>
-      <tr><td><b>SSVC</b><br>Spring et al. 2020</td><td>An ordinal judgement: None, PoC, Active</td><td>A human analyst answers, per vulnerability</td><td><b>No</b></td></tr>
+      <tr><td><b>EPSS</b> <b>[1]</b><br>Jacobs et al. 2023</td><td>Probability of exploitation activity observed in the wild within 30 days</td><td>XGBoost <b>[19]</b> classifier over 1,164 features, labelled by IDS, IPS and honeypot telemetry from Fortinet, AlienVault, Shadowserver and GreyNoise. 192,035 vulnerabilities, 6.4M exploitation observations, 6.4% of vulnerabilities ever observed exploited. AUC-PR 0.779 in v3</td><td>Yes</td></tr>
+      <tr><td><b>Time to exploit</b> <b>[5]</b><br>Hong and Lee 2025</td><td>How many days until exploitation, not whether</td><td>Out-of-fold stacking ensemble, framed as regression. Gini importance: CVSS 0.5040, description text 0.4846, event count 0.0114</td><td>Yes</td></tr>
+      <tr><td><b>Management chaining</b> <b>[2]</b><br>Shimizu and Hashimoto 2026</td><td>A gate, passed or not</td><td>No model at all. KEV membership or EPSS above 0.088, then CVSS above 7.0. ROC-AUC 0.8678; 96.9% workload reduction while catching 48.9% of exploited vulnerabilities</td><td>Yes, at all three gates</td></tr>
+      <tr><td><b>SSVC</b> <b>[12]</b><br>Spring et al. 2020</td><td>An ordinal judgement: None, PoC, Active</td><td>A human analyst answers, per vulnerability</td><td><b>No</b></td></tr>
       <tr><td><b>ThreatRank</b></td><td>EPSS where a CVE exists, a learned surrogate where it does not</td><td>Lookup, then gradient boosting regression on report-level features</td><td><b>No</b></td></tr>
     </tbody>
   </table></div>
@@ -617,9 +643,9 @@
      falsification threshold is set where it is: if features this informative in a published model
      cannot reach a Spearman of 0.3 here, the problem is our data, and that is worth reporting.</p>
 
-  <p><b>Why this, and where it came from.</b> EPSS is used exactly as Jacobs et al. published
-     it, as a lookup and as a baseline, never recomputed. <b>The surrogate is our adaptation of an
-     established pattern.</b> Hong and Lee predict time to exploit from CVSS, the CVE description
+  <p><b>Why this, and where it came from.</b> EPSS is used exactly as Jacobs et al. <b>[1]</b>
+     published it, as a lookup and as a baseline, never recomputed. <b>The surrogate is our adaptation of an
+     established pattern.</b> Hong and Lee <b>[5]</b> predict time to exploit from CVSS, the CVE description
      and proof-of-concept counts, which is the same shape of problem: infer an exploitation-related
      quantity from metadata rather than from the exploit itself. We apply that shape where they
      could not, to findings that have no CVE and therefore no description in NVD to start from.</p>
@@ -676,10 +702,12 @@
      programs. <b>Any consequence number produced today demonstrates that the pipeline runs; it is
      not a measurement of consequence and must not be reported as one.</b></p>
 
-    <p><b>Why this, and where it came from.</b> MulVAL is not ours and neither is the idea of
-     scoring a vulnerability by where it sits in an attack graph: TriAssetRank ranks
+    <p><b>Why this, and where it came from.</b> MulVAL <b>[18]</b> is not ours, nor is the idea of
+     scoring a vulnerability by where it sits in an attack graph: TriAssetRank <b>[3]</b> ranks
      vulnerabilities, exploits and privileges together for countermeasure selection, and
-     DefenceRank ranks defences from graph analysis. <b>Both rank CVE-bearing vulnerabilities.</b>
+     DefenceRank <b>[4]</b> ranks defences from graph analysis. Its extensions are surveyed in <b>[6]</b>, and the 2024 survey of attack graph generation
+     <b>[21]</b> still lists MulVAL among the pillars the field builds on, which is the answer to
+     the reasonable question of why a 2005 tool is being used in 2026. <b>Both rank CVE-bearing vulnerabilities.</b>
      Our change is upstream of the ranking: we feed the graph CWE-typed findings, so the nodes
      include weaknesses that no CVE-keyed pipeline could place. Shortest path to a goal is a
      standard attack-graph metric and we claim no novelty for it. The 1/d normalisation, and
@@ -687,42 +715,58 @@
 
   <h3>8. Risk prediction <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
-    <tr><td style="width:120px"><b>Input</b></td><td>Both head values, each bounded on [0, 1].</td></tr>
-    <tr><td><b>Combination</b></td><td><b>risk = likelihood &times; consequence.</b> Fixed, not learned. The product is bounded on [0, 1] because both inputs are.</td></tr>
-    <tr><td><b>Output</b></td><td>One risk score per finding, computed identically whether or not the finding names a CVE.</td></tr>
+    <tr><td style="width:120px"><b>Input</b></td><td>Both head values, each bounded on [0, 1], plus the feature vector.</td></tr>
+    <tr><td><b>Model family</b></td><td><b>Gradient boosted decision trees</b>, a supervised classifier</td></tr>
+    <tr><td><b>Implementation</b></td><td><b>XGBoost</b> <b>[19]</b></td></tr>
+    <tr><td><b>Label</b></td><td>KEV membership, on the CVE-bearing subset. The predicted probability <i>is</i> the score, so no separate continuous target is needed</td></tr>
+    <tr><td><b>Objective</b></td><td>binary logistic, with the positive class weighted by the negative-to-positive ratio rather than resampled, so no synthetic findings enter training</td></tr>
+    <tr><td><b>Selection</b></td><td>early stopping on a validation fold, every split grouped by host</td></tr>
+    <tr><td><b>Fallback</b></td><td><b>risk = likelihood &#215; consequence.</b> No learning. Fixed in advance and used if the label proves too scarce.</td></tr>
+    <tr><td><b>Output</b></td><td>One risk score per finding, defined for catalogued and uncatalogued findings alike.</td></tr>
   </tbody></table></div>
-  <p><b>Why the weighting is not learned, in one number: the corpus holds seventeen KEV
-     positives.</b> Across all 632 archived findings, 436 carry a CVE and 17 touch the KEV
-     catalogue. Split by host, roughly ten of those land in any training fold. That is not a
-     training set, and a weighting fitted on it would be noise given a decimal point. Multiplying
-     probability by impact is the textbook definition of risk, needs no label at all, and applies
-     to a finding with no CVE exactly as it applies to one with a CVE, so the extrapolation
-     problem disappears rather than being managed.</p>
-  <div class="keep">
-    <p><b>The learned version is registered, not abandoned.</b> If the corpus reaches the twenty
-       hosts the Nessus licence allows, train a gradient boosting classifier taking both head
-       values as features and KEV as the label on the CVE-bearing subset, and compare it against
-       the product by NDCG on held-out hosts. <b>If it wins by a margin that survives the host
-       split, adopt it in Deliverable 3</b> and state the extrapolation as a limitation. If it
-       does not, the product stands and the comparison is itself the result.</p>
-  </div>
+  <p><b>How gradient boosting works, and why this family.</b> The model is an additive ensemble of
+     shallow regression trees. Each new tree is fitted to the gradient of a differentiable loss
+     evaluated on the ensemble built so far, so a tree corrects the residual error of its
+     predecessors rather than modelling the target directly. XGBoost adds a second-order
+     approximation of that loss, L1 and L2 regularisation on the leaf weights, and shrinkage on
+     each tree's contribution, which together control the variance an unregularised ensemble would
+     otherwise acquire on a small dataset. Under a binary logistic objective the output passes
+     through a sigmoid, so the model emits a probability rather than a bare decision.</p>
+  <p>Three reasons for this family rather than another. The feature vector is <b>small, tabular,
+     and mixes numeric with one-hot and ordinal fields</b>, which is the regime where boosted trees
+     stay competitive with and usually preferable to deep architectures. <b>Class imbalance is
+     expected</b> and is handled by class weighting rather than resampling. And <b>EPSS is itself
+     an XGBoost classifier <b>[1]</b></b>, so comparing our score against EPSS compares two models
+     of the same family and isolates the contribution of the features rather than of the learning
+     algorithm.</p>
+
   <p><b>Why classification and not regression.</b> Regression needs a continuous label and none
      survives scrutiny. EPSS cannot be the answer key, because Q1 asks whether we beat EPSS and the
-     best possible result would be a tie. CVSS cannot, because regressing onto it builds a CVSS
-     predictor. Time from disclosure to KEV entry exists for 1.8% of findings and is censored data,
-     needing survival analysis rather than regression. A composite we invent is barred outright:
-     the team may not define a metric and then grade itself against it.</p>
-  <p>The reasoning above is why this stage no longer reads "open". It may still be wrong, and
-     the comparison registered in the box says precisely what would show that.</p>
-
-    <p><b>Why this, and where it came from.</b> <b>Risk as probability times impact is the
-     textbook definition and we claim nothing for it.</b> Choosing it over a learned weighting is
-     the decision, and it was forced by a measurement rather than a preference. The closest
-     published neighbour is Shimizu and Hashimoto, who chain KEV membership, then EPSS above
-     0.088, then CVSS above 7.0 into a four-level decision tree. We differ in two ways that follow
-     from the same commitment: the output is continuous rather than a bucket, and it is defined
-     for findings on which their first two gates cannot be evaluated at all, because those gates
-     require a CVE.</p>
+     best attainable result would be a tie. CVSS cannot, because regressing onto it builds a CVSS
+     predictor. Time from disclosure to KEV entry exists for a tiny fraction of findings and is
+     censored data, needing survival analysis rather than regression. A composite we invent is
+     barred outright: the team may not define a metric and then grade itself against it.</p>
+  <div class="keep">
+    <p><b>The risk here is the label, not the model.</b> Exploitation is rare, and EPSS itself
+       reports that only a small fraction of published vulnerabilities are ever observed exploited
+       in the wild <b>[1]</b>. Our own corpus reflects that, and under a host-level split very few
+       positives land in any training fold.</p>
+    <p><b>So the fallback is fixed before the attempt, not after seeing the result.</b> If the
+       classifier cannot beat a simple baseline under host-level splitting, the score reverts to
+       the product of the two heads. Multiplying likelihood by consequence is the textbook
+       definition of risk, needs no label at all, and is defined identically whether or not a
+       finding carries a CVE, so the extrapolation from the labelled subset disappears rather than
+       being managed. Which one is used is reported either way, in the same manner as stage 9.</p>
+  </div>
+  <p><b>Why this, and where it came from.</b> Applying supervised classification to security risk
+     assessment is established practice rather than something this project invented <b>[10]</b>;
+     what is specific here is the label and the fallback. Risk as probability times impact is the
+     textbook definition and we claim nothing for that either; the decision is treating it as the
+     fallback rather than the default. The closest published neighbour is Shimizu and Hashimoto <b>[2]</b>, who
+     chain KEV membership, then EPSS above 0.088, then CVSS above 7.0 into a four-level decision
+     tree. We differ in two ways that follow from the same commitment: the output is continuous
+     rather than a bucket, and it is defined for findings on which their first two gates cannot be
+     evaluated at all, because those gates require a CVE.</p>
 
   <h3>9. Prioritise <span class="tag t-revise">Designed</span></h3>
   <div class="tbl"><table><tbody>
@@ -738,7 +782,7 @@
      answer a result either way.</p>
 
     <p><b>Why this, and where it came from.</b> Ranking remediation under a fixed defence budget
-     is the ground DefenceRank and TriAssetRank already occupy, and the equal-budget framing is
+     is the ground DefenceRank <b>[4]</b> and TriAssetRank <b>[3]</b> already occupy, and the equal-budget framing is
      the advisor's, recorded as Q3. Learning to rank is standard information retrieval machinery
      and the knapsack fallback is ordinary operations research. <b>Nothing here is novel, and the
      interesting part is expected to be the negative result</b>: whether 20 query groups can
@@ -761,10 +805,10 @@
        result was withdrawn.</p>
   </div>
 
-    <p><b>Why this, and where it came from.</b> Mandl et al. evaluate vulnerability detection
+    <p><b>Why this, and where it came from.</b> Mandl et al. <b>[17]</b> evaluate vulnerability detection
      against known ground truth across ecosystems, which is the same question asked of a different
-     input, and the IEEE S&amp;P study of vendor patching behaviour supplies the real-world reason
-     the problem exists at all. <b>Our ground truth is unusual and its limitation is the reason:</b>
+     input, and the IEEE S&amp;P study of vendor patching behaviour <b>[13]</b> supplies the real-world
+     reason the problem exists at all. <b>Our ground truth is unusual and its limitation is the reason:</b>
      we use the package versions installed on the host at scan time, which is only available
      because we built the machines. A real assessment scans hosts the analyst does not own, so this
      stage measures how bad version-inference false positives are; it is not a component anyone
@@ -1086,8 +1130,46 @@
   </ul>
 </section>
 
+<section>
+  <h2>References</h2>
+  <p>Twenty-one entries, numbered as in the Deliverable 2 source. Entries 18 and 19 are the
+     foundational works the pipeline actually runs on and were missing from the Deliverable 1
+     list: we ran MulVAL while citing only a survey of its extensions, and we use XGBoost.
+     <b>Their age is not a weakness and should not be defended as one:</b> a paper is cited
+     because its software or algorithm is used, and MulVAL remains the reference implementation
+     for logical attack graphs, which is what entries 6 and 21 establish from 2023 and 2024
+     rather than from our own assertion.</p>
+  <ol class="refs">
+    <li>J. Jacobs, S. Romanosky, O. Suciu, B. Edwards, and A. Sarabi, "Enhancing vulnerability prioritization: Data-driven exploit predictions with community-driven insights," in <i>Proc. 2023 IEEE European Symp. Security and Privacy Workshops (EuroS&amp;PW)</i>, Delft, Netherlands, 2023, pp. 194-206, doi: 10.1109/EuroSPW59978.2023.00027.</li>
+    <li>N. Shimizu and M. Hashimoto, "Vulnerability management chaining: An integrated framework for efficient cybersecurity risk prioritization," <i>IEEE Access</i>, vol. 14, pp. 31407-31424, 2026, doi: 10.1109/ACCESS.2026.3665768.</li>
+    <li>A. L. P. Tchimwa Bouom, J.-P. Lienou, W. Ejuh Geh, F. Free Nelson, S. Shetty, and C. Kamhoua, "TriAssetRank: Ranking vulnerabilities, exploits, and privileges for countermeasures prioritization," <i>IEEE Trans. Information Forensics and Security</i>, vol. 19, pp. 10189-10205, 2024, doi: 10.1109/TIFS.2024.3488533.</li>
+    <li>R. S. Patil, M. D. K&auml;llman, and V. Fodor, "DefenceRank: Ranking based attack graph analysis and defence prioritization," in <i>Proc. 2024 IEEE Int. Conf. Cyber Security and Resilience (CSR)</i>, London, United Kingdom, 2024, pp. 466-473, doi: 10.1109/CSR61664.2024.10679390.</li>
+    <li>J.-K. Hong and S.-J. Lee, "Out-of-fold stacking regression for rapid prediction of time-to-exploit in newly disclosed vulnerabilities," <i>IEEE Access</i>, vol. 13, pp. 192246-192262, 2025, doi: 10.1109/ACCESS.2025.3621226.</li>
+    <li>D. Tayouri, N. Baum, A. Shabtai, and R. Puzis, "A survey of MulVAL extensions and their attack scenarios coverage," <i>IEEE Access</i>, vol. 11, pp. 27974-27991, 2023, doi: 10.1109/ACCESS.2023.3257721.</li>
+    <li>H. Renney, I. V. Chenchiah, M. Nethercott, R. Paligadu, and J. Lang, "An open and adaptable approach to vulnerability risk scoring," <i>Journal of Cyber Security</i>, vol. 7, no. 1, pp. 221-238, 2025, doi: 10.32604/jcs.2025.064958.</li>
+    <li>N. Amirov, N. Aliyev, E. Huseynov, and &#350;. Bahtiyar, "Automating vulnerability assessment using a machine learning framework for CVSS scoring," in <i>Proc. 2026 IEEE Int. Black Sea Conf. Communications and Networking (BlackSeaCom)</i>, Bucharest, Romania, 2026, pp. 1-6, doi: 10.1109/BlackSeaCom69760.2026.11598324.</li>
+    <li>S.-C. Lim and J.-C. Kim, "Multi-modal machine learning for automated CVSS severity prediction for conservative vulnerability assessment," <i>IEEE Access</i>, vol. 13, pp. 189344-189357, 2025, doi: 10.1109/ACCESS.2025.3627919.</li>
+    <li>A. Muhammad, A. Nasiri, and A. Harimurti, "Machine learning methods for classification and prediction information security risk assessment," <i>IAES Int. Journal of Artificial Intelligence (IJ-AI)</i>, vol. 14, no. 1, pp. 457-465, 2025, doi: 10.11591/ijai.v14.i1.pp457-465.</li>
+    <li>C. Beddies, S. Kubica, B. Heimer, and B. Eylert, "XplainCVSS: Interpretable machine learning for explainable CVSS vulnerability severity prediction," in <i>Proc. 2026 IEEE European Symp. Security and Privacy Workshops (EuroS&amp;PW)</i>, Lisbon, Portugal, 2026, pp. 270-277, doi: 10.1109/EuroSPW72509.2026.00040.</li>
+    <li>J. M. Spring, E. Hatleback, A. Householder, A. Manion, and D. Shick, "Prioritizing vulnerability response: A stakeholder-specific vulnerability categorization (version 1.1)," in <i>Workshop on the Economics of Information Security (WEIS)</i>, Brussels, Belgium, Dec. 2020.</li>
+    <li>S. Rivera P&eacute;rez, M. van Eeten, and C. H. Ga&ntilde;&aacute;n, "Patchy performance? Uncovering the vulnerability management practices of IoT-centric vendors," in <i>Proc. 2024 IEEE Symp. Security and Privacy (SP)</i>, San Francisco, CA, USA, 2024.</li>
+    <li>Y. Jiang, N. Oo, Q. Meng, H. W. Lim, and B. Sikdar, "A survey on vulnerability prioritization: Taxonomy, metrics, and research challenges," arXiv:2502.11070, Feb. 2025. (preprint)</li>
+    <li>B. Machado, D. Lautert, C. Kapelinski, and D. Kreutz, "Structured extraction of vulnerabilities in OpenVAS and Tenable WAS reports using LLMs," arXiv:2511.15745, 2025. (preprint)</li>
+    <li>X. Dou, H. Bahsi, and A. Guerra-Manzanares, "Enhancing continual learning for software vulnerability prediction: Addressing catastrophic forgetting via hybrid-confidence-aware selective replay for temporal LLM fine-tuning," in <i>Proc. 12th Int. Conf. Information Systems Security and Privacy (ICISSP)</i>, 2026.</li>
+    <li>P. Mandl, P. Mandl, M. Hausl, and M. Auch, "A ground-truth-based evaluation of vulnerability detection across multiple ecosystems," arXiv:2604.21111, 2026. (preprint)</li>
+    <li>X. Ou, S. Govindavajhala, and A. W. Appel, "MulVAL: A logic-based network security analyzer," in <i>Proc. 14th USENIX Security Symp.</i>, Baltimore, MD, USA, 2005, pp. 8-23.</li>
+    <li>T. Chen and C. Guestrin, "XGBoost: A scalable tree boosting system," in <i>Proc. 22nd ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining</i>, San Francisco, CA, USA, 2016, pp. 785-794, doi: 10.1145/2939672.2939785.</li>
+    <li>M. R. Rahman and L. Williams, "Investigating co-occurrences of MITRE ATT&amp;CK techniques," arXiv:2211.06495, Nov. 2022. (preprint)</li>
+    <li>A. M. Konsta, A. L. Lafuente, B. Spiga, and N. Dragoni, "Survey: Automatic generation of attack trees and attack graphs," <i>Computers &amp; Security</i>, vol. 137, art. 103602, 2024.</li>
+  </ol>
+  <p><b>Thirteen of the twenty-one are held as PDFs in the local library</b>, counting the two
+     SSVC versions as the single entry [12]. Not held: [7], [8], [10] and [11], behind publisher
+     paywalls this VM cannot reach, plus [18] to [21], which are freely available and simply not
+     yet downloaded.</p>
+</section>
+
 <footer>
-  Status as of 25 August 2026. Figures come from the scan log in <code>data/scans.md</code>;
+  Status as of 6 September 2026. Figures come from the scan log in <code>data/scans.md</code>;
   every claim on this page is traceable to an archived scan report and a package snapshot taken
   before that scan ran.
 </footer>
